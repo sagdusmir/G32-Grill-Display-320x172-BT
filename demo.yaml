@@ -8,7 +8,7 @@ esphome:
   on_boot:
     then:
       - switch.turn_on: screen_switch
-  
+
 
 esp32:
   board: esp32-c6-devkitc-1
@@ -116,72 +116,9 @@ display:
       mirror_x: true
       mirror_y: false
     invert_colors: false
-    data_rate: 80MHz
+    data_rate: 40MHz
     color_order: bgr
-    update_interval: 1s
-# Font
-font:
-  - file: "fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf"
-    id: mdi_42
-    size: 50
-    bpp: 4
-    glyphs: [
-      "\U000F0335", # mdi-lightbulb
-      "\U000F0336", # mdi-lightbulb-outline
-      "\U000F1793", # SALON AVİZE
-      "\U000F08DD", # SALON KOŞE
-      "\U000F0769", # SALON APLİK
-      "\U000F1107", #PİRİZLER
-      "\U000F0C0F", #mutfak1
-      "\U000F0C11", #mutfak2
-      "\U000F0C03", #ipek
-      "\U000F1A60", #sokak
-      "\U000F1020", #on_bahce
-      "\U000F0D80",
-      "\U000F04B9",
-      "\U000F05BC",
-      "\U000F0F92",
-      "\U000F1B2A",
-      "\U000F024A", 
-    ]
-  - file: "gfonts://Roboto"
-    id: roboto70
-    size: 50
-    bpp: 4
-    extras:
-      - file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf' # http://materialdesignicons.com/cdn/7.4.47/ 
-        glyphs: ["\U000F081B", #KAPILAR
-                  "\U000F11DB", #PENCERELER
-                  "\U000F1107", #PİRİZLER
-                  "\U000F1480", #CURRENT
-                  "\U000F1088", #NUMARA 1
-                  "\U000F1089", #NUMARA 2
-                  "\U000F108A", #NUMARA 3
-                  "\U000F0438", #KAZAN
-                  "\U000F072A", # ÇAMAŞIR
-                  "\U000F0448", # TV
-                  "\U000F1AAF", # TERMOSIFON
-                  "\U000F058F", # VANA
-                  "\U000F0F93", # VANA KAPALI
-                  "\U000F0A47", # SU MOTORU OFF
-                  "\U000F01FA", # SU MOTORU ON
-                  "\U000F1415", #  SU TANKI DOLU
-                  "\U000F1416", #  SU TANKI BOS
-                  "\U000F0710",  # kürek
-                  "\U000F1060", # FISKİYE
-                  "\U000F105F", # Sprinker
-                  "\U000F199D", # Sprinker Fire
-                  "\U000F058C", # Damla Sulama
-                  "\U000F1508", # Damla Off
-                  "\U000F0E9F", # Anahtar kapalı
-                  "\U000F10D9", # Anahtar açık
-                  "\U000F0906", # Power
-                  "\U000F1481",
-                  "\U000F1482",
-                  "\U000F1A75", # depo on
-                  "\U000F1A76", # depo off
-                  "\U000F0504", # sıcaklık
-          ]
+    # update_interval: 1s
     
 output:
   - platform: ledc    
@@ -194,6 +131,20 @@ light:
     name: Display Backlight
     id: back_light
     restore_mode: ALWAYS_ON
+
+    # =======================
+    #  Single WS2812 RGB LED
+    # =======================
+  - platform: esp32_rmt_led_strip
+    id: board_rgb_led
+    name: "Board RGB LED"
+    pin: GPIO8
+    chipset: WS2812
+    num_leds: 1               # only one LED on this board
+    rgb_order: RGB            # WS2812 typically uses GRB order
+    # rmt_channel: 0            # any free RMT channel (0-7)
+    default_transition_length: 0ms   # instant change (optional)
+    restore_mode: ALWAYS_ON   # optional
 
 # Switch ON/OFF écran
 switch:
@@ -263,28 +214,6 @@ lvgl:
       - logger.log: "LVGL is idle"
       - switch.turn_off: screen_switch
       - lvgl.pause:
-  style_definitions:
-    - id: header_footer
-      bg_color: 0x2F8CD8
-      bg_grad_color: 0x005782
-      bg_grad_dir: VER
-      bg_opa: COVER
-      border_opa: TRANSP
-      radius: 0
-      pad_all: 0
-      pad_row: 0
-      pad_column: 0
-      border_color: 0x0077b3
-      text_color: 0xFFFFFF
-      width: 100%
-      height: 40
-    - id: date_style      # choose an ID for your definition
-      text_font: unscii_8
-      align: center
-      text_color: 0x000000
-      bg_opa: cover
-      radius: 4
-      pad_all: 2
   pages:
     - id: main_page
       width: 100%
@@ -297,67 +226,51 @@ lvgl:
             y: 10
             width: 172
             height: 80
-            bg_opa: TRANSP
+            bg_opa: COVER
+            bg_color: 0xff0000
             shadow_opa: TRANSP
             checkable: False
             widgets:
               - label:
                   align: LEFT_MID
-                  text_font: mdi_42
-                  text: "xx\U000F1793"
-                  long_mode : dot
+                  text_font: MONTSERRAT_20
+                  text: "xx1"
             on_click:
-              - homeassistant.action:
-                  action: switch.toggle
-                  data:
-                    entity_id: switch.panel_relay_2
+              - script.execute: set_purple
+
         - button:  ## DIŞ SICAKLIK
             x: 0
             y: 100
             width: 120
             height: 60
-            bg_opa: TRANSP
+            bg_opa: COVER
+            bg_color: 0x00ff00
             shadow_opa: TRANSP
             widgets:
               - label:
                   id: display_dis_sicaklik
                   text: out
-                  text_font: roboto70
+                  text_font: MONTSERRAT_20
                   text_color: 0xffd700
             on_click:
-              - homeassistant.action:
-                  action: switch.toggle
-                  data:
-                    entity_id: switch.panel_relay_2            
-        
-binary_sensor:
-               
-  - platform: homeassistant ### SALON AVİZE
-    id: avize_switch
-    entity_id: switch.panel_relay_2
-    trigger_on_initial_state: true
-    on_state:
-      then:
-        - if:
-            condition:
-               lambda: 'return id(avize_switch).state == true;'
-            then:
-              - lvgl.widget.update:
-                  id: SALON_AVIZE
-                  text_color: 0xffff00
-            else:
-              - lvgl.widget.update:
-                  id: SALON_AVIZE
-                  text_color: 0xFFFFFF
-sensor:
-################ DIŞ SICAKLIK ############### 
-  - platform: homeassistant
-    id: house_temp_sensor2
-    entity_id: sensor.lumi_lumi_sens_temperature_3
-    on_value:
-     then:
-         - lvgl.label.update:
-            id: display_dis_sicaklik
-            text: 
-              format: " %.1f "
-              args: ["id(house_temp_sensor2).state"]
+              - script.execute: flash_red              
+
+script:
+  - id: flash_red
+    then:
+      - light.turn_on:
+          id: board_rgb_led
+          brightness: 100%
+          red: 100%
+          green: 0%
+          blue: 0%
+          effect: none
+
+  - id: set_purple
+    then:
+      - light.turn_on:
+          id: board_rgb_led
+          brightness: 40%
+          red: 80%
+          green: 0%
+          blue: 100%
