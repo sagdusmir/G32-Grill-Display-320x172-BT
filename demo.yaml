@@ -69,10 +69,12 @@ touchscreen:
   calibration:
     x_min: 0
     y_min: 0
-    y_max: 320
-    x_max: 172
+    y_max: 172
+    x_max: 320
   transform:
-    mirror_x: True
+    swap_xy: true
+    mirror_x: true
+    mirror_y: true
 
 spi:
   clk_pin: GPIO1
@@ -98,25 +100,24 @@ color:
   - id: color_yellow
     hex: 'FFFF00'
 
-# Configuration de l'écran LCD
 display:
   - platform: ili9xxx
-    id: rpi_disp
+    id: my_display
     model: ST7789V
     dc_pin: GPIO15
     cs_pin: GPIO14
     reset_pin: GPIO22
     dimensions:
-      width: 172
-      height: 320
-      offset_height: 0
-      offset_width: 34
+      width: 320
+      height: 172
+      offset_height: 34
+      offset_width: 0
     transform:
-      swap_xy: false
+      swap_xy: true
       mirror_x: true
-      mirror_y: false
+      mirror_y: true
     invert_colors: false
-    data_rate: 40MHz
+    data_rate: 80MHz
     color_order: bgr
     # update_interval: 1s
     
@@ -125,13 +126,8 @@ output:
     id: lcd_backlight
     pin: GPIO23
     inverted: false
-light:
-  - platform: monochromatic # Define a monochromatic, dimmable light for the backlight
-    output: lcd_backlight
-    name: Display Backlight
-    id: back_light
-    restore_mode: ALWAYS_ON
 
+light:
     # =======================
     #  Single WS2812 RGB LED
     # =======================
@@ -149,15 +145,17 @@ light:
 # Switch ON/OFF écran
 switch:
   - platform: template
-    name: "Ekran ON/OFF"
+    name: "Screen ON/OFF"
     id: screen_switch
+    internal: true
     turn_on_action:
       - output.turn_on: lcd_backlight
     turn_off_action:
       - output.turn_off: lcd_backlight
     optimistic: true
   - platform: template  #### ANTI BURN
-    name: Antiburn
+    name: "Antiburn"
+    internal: true
     id: switch_antiburn
     icon: mdi:television-shimmer
     optimistic: true
@@ -205,7 +203,7 @@ number:
     mode: box    
 lvgl:
   displays:
-    - rpi_disp
+    - my_display
   touchscreens:
     - my_touchscreen
   on_idle:
@@ -220,12 +218,12 @@ lvgl:
       bg_color: 0x000000
       bg_opa: cover
       widgets:
-        - button:  ## AVİZE LAMBA
+        - button:
             id: SALON_AVIZE
             x: 0
             y: 10
-            width: 172
-            height: 80
+            width: 160
+            height: 50
             bg_opa: COVER
             bg_color: 0xff0000
             shadow_opa: TRANSP
@@ -237,12 +235,11 @@ lvgl:
                   text: "xx1"
             on_click:
               - script.execute: set_purple
-
         - button:  ## DIŞ SICAKLIK
             x: 0
             y: 100
-            width: 120
-            height: 60
+            width: 160
+            height: 50
             bg_opa: COVER
             bg_color: 0x00ff00
             shadow_opa: TRANSP
@@ -254,6 +251,36 @@ lvgl:
                   text_color: 0xffd700
             on_click:
               - script.execute: flash_red              
+        - button:
+            x: 160
+            y: 10
+            width: 160
+            height: 50
+            bg_opa: COVER
+            bg_color: 0x0000ff
+            shadow_opa: TRANSP
+            checkable: False
+            widgets:
+              - label:
+                  align: LEFT_MID
+                  text_font: MONTSERRAT_20
+                  text: "OR"
+
+        - button:
+            x: 160
+            y: 100
+            width: 160
+            height: 50
+            bg_opa: COVER
+            bg_color: 0xff00ff
+            shadow_opa: TRANSP
+            checkable: False
+            widgets:
+              - label:
+                  align: LEFT_MID
+                  text_font: MONTSERRAT_20
+                  text: "UR"
+
 
 script:
   - id: flash_red
