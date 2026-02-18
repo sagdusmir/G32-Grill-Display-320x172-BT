@@ -12,8 +12,12 @@ esphome:
 
 esp32:
   board: esp32-c6-devkitc-1
+  variant: esp32c6
   framework:
     type: esp-idf
+    sdkconfig_options:
+      # CONFIG_ESPTOOLPY_FLASHSIZE_4MB: y
+      CONFIG_ESPTOOLPY_FLASH_SIZE_8MB: y  # check actual flash capacity with: esptool -p POSRT flash-id
 
 # Enable logging
 logger:
@@ -55,8 +59,7 @@ touchscreen:
   id: my_touchscreen
   interrupt_pin: 21
   reset_pin: 20
-  on_touch:
-      - lambda: |-
+  on_touch:      - lambda: |-
           ESP_LOGI("Touch", "Touch detected at x=%d, y=%d", touch.x, touch.y);
   on_release:
       - if:
