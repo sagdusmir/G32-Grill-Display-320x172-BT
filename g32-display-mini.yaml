@@ -520,6 +520,16 @@ globals:
     type: int
     initial_value: '0'
 
+  - id: sensor_index        # parameter for zone (1-4) or sensor (5-8)
+    type: int
+    initial_value: '0'
+  - id: sensor_limit_value  # the actual sensor limit for the indexed Zone/Sensor
+    type: int
+    initial_value: '0'
+  - id: sensor_max_value    # maximum value for zone and sensor values (arcs)
+    type: int
+    initial_value: '0'
+
   - id: settings_min_gas_value
     type: int
     initial_value: '0'
@@ -975,13 +985,24 @@ lvgl:
                   styles: item_obj_style
                   clickable: !lambda |-
                     return id(settings_enable_temperature_limits_persistent);
-                  # on_press:
-                  #   - lambda: |-
-                  #       id(sensor_index) = 1;
-                  #       id(sensor_max_value) = ${Zone_Max};
-                  #       id(sensor_limit_value) = id(zone1_limit_value);
-                  #       lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
-                  #       lv_slider_set_value(sensor_limit_slider, id(zone1_limit_value), LV_ANIM_OFF );
+                  on_press:
+                    - lambda: |-
+                        id(sensor_index) = 1;
+                        id(sensor_max_value) = ${Zone_Max};
+                        id(sensor_limit_value) = id(zone1_limit_value);
+                        lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
+                        lv_slider_set_value(sensor_limit_slider, id(zone1_limit_value), LV_ANIM_OFF );
+                    - lvgl.label.update:
+                        id: sensor_limit_headline_label
+                        text: !lambda |-
+                          return "ZONE 1 ALARM";
+                    - lvgl.label.update:
+                        id: sensor_limit_label
+                        text: !lambda |-
+                          return (to_string(static_cast<int>(id(zone1_limit_value)))+"°C").c_str();
+                    - lvgl.widget.redraw:
+                        id: sensor_limit_slider
+                    - lvgl.page.show: sensor_limits_page
                   widgets:
                     - label:  # background
                         id: zone1_label_shadow
@@ -1130,24 +1151,24 @@ lvgl:
                   styles: item_obj_style
                   clickable: !lambda |-
                     return id(settings_enable_temperature_limits_persistent);
-                  # on_press:
-                  #   - lambda: |-
-                  #       id(sensor_index) = 2;
-                  #       id(sensor_max_value) = ${Zone_Max};
-                  #       id(sensor_limit_value) = id(zone2_limit_value);
-                  #       lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
-                  #       lv_slider_set_value(sensor_limit_slider, id(zone2_limit_value), LV_ANIM_OFF );
-                  #   - lvgl.label.update:
-                  #       id: sensor_limit_headline_label
-                  #       text: !lambda |-
-                  #         return "ZONE 2 ALARM";
-                  #   - lvgl.label.update:
-                  #       id: sensor_limit_label
-                  #       text: !lambda |-
-                  #         return (to_string(static_cast<int>(id(zone2_limit_value)))+"°C").c_str();
-                  #   - lvgl.widget.redraw:
-                  #       id: sensor_limit_slider
-                  #   - lvgl.page.show: sensor_limits_page
+                  on_press:
+                    - lambda: |-
+                        id(sensor_index) = 2;
+                        id(sensor_max_value) = ${Zone_Max};
+                        id(sensor_limit_value) = id(zone2_limit_value);
+                        lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
+                        lv_slider_set_value(sensor_limit_slider, id(zone2_limit_value), LV_ANIM_OFF );
+                    - lvgl.label.update:
+                        id: sensor_limit_headline_label
+                        text: !lambda |-
+                          return "ZONE 2 ALARM";
+                    - lvgl.label.update:
+                        id: sensor_limit_label
+                        text: !lambda |-
+                          return (to_string(static_cast<int>(id(zone2_limit_value)))+"°C").c_str();
+                    - lvgl.widget.redraw:
+                        id: sensor_limit_slider
+                    - lvgl.page.show: sensor_limits_page
                   widgets:
                     - label:  # background
                         id: zone2_label_shadow
@@ -1295,24 +1316,24 @@ lvgl:
                   styles: item_obj_style
                   clickable: !lambda |-
                     return id(settings_enable_temperature_limits_persistent);
-                  # on_press:
-                  #   - lambda: |-
-                  #       id(sensor_index) = 3;
-                  #       id(sensor_max_value) = ${Zone_Max};
-                  #       id(sensor_limit_value) = id(zone3_limit_value);
-                  #       lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
-                  #       lv_slider_set_value(sensor_limit_slider, id(zone3_limit_value), LV_ANIM_OFF );
-                  #   - lvgl.label.update:
-                  #       id: sensor_limit_headline_label
-                  #       text: !lambda |-
-                  #         return "ZONE 3 ALARM";
-                  #   - lvgl.label.update:
-                  #       id: sensor_limit_label
-                  #       text: !lambda |-
-                  #         return (to_string(static_cast<int>(id(zone3_limit_value)))+"°C").c_str();
-                  #   - lvgl.widget.redraw:
-                  #       id: sensor_limit_slider
-                  #   - lvgl.page.show: sensor_limits_page
+                  on_press:
+                    - lambda: |-
+                        id(sensor_index) = 3;
+                        id(sensor_max_value) = ${Zone_Max};
+                        id(sensor_limit_value) = id(zone3_limit_value);
+                        lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
+                        lv_slider_set_value(sensor_limit_slider, id(zone3_limit_value), LV_ANIM_OFF );
+                    - lvgl.label.update:
+                        id: sensor_limit_headline_label
+                        text: !lambda |-
+                          return "ZONE 3 ALARM";
+                    - lvgl.label.update:
+                        id: sensor_limit_label
+                        text: !lambda |-
+                          return (to_string(static_cast<int>(id(zone3_limit_value)))+"°C").c_str();
+                    - lvgl.widget.redraw:
+                        id: sensor_limit_slider
+                    - lvgl.page.show: sensor_limits_page
                   widgets:
                     - label:  # background
                         id: zone3_label_shadow
@@ -1460,24 +1481,24 @@ lvgl:
                   styles: item_obj_style
                   clickable: !lambda |-
                     return id(settings_enable_temperature_limits_persistent);
-                  # on_press:
-                  #   - lambda: |-
-                  #       id(sensor_index) = 4;
-                  #       id(sensor_max_value) = ${Zone_Max};
-                  #       id(sensor_limit_value) = id(zone4_limit_value);
-                  #       lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
-                  #       lv_slider_set_value(sensor_limit_slider, id(zone4_limit_value), LV_ANIM_OFF );
-                  #   - lvgl.label.update:
-                  #       id: sensor_limit_headline_label
-                  #       text: !lambda |-
-                  #         return "ZONE 4 ALARM";
-                  #   - lvgl.label.update:
-                  #       id: sensor_limit_label
-                  #       text: !lambda |-
-                  #         return (to_string(static_cast<int>(id(zone4_limit_value)))+"°C").c_str();
-                  #   - lvgl.widget.redraw:
-                  #       id: sensor_limit_slider
-                  #   - lvgl.page.show: sensor_limits_page
+                  on_press:
+                    - lambda: |-
+                        id(sensor_index) = 4;
+                        id(sensor_max_value) = ${Zone_Max};
+                        id(sensor_limit_value) = id(zone4_limit_value);
+                        lv_slider_set_range(sensor_limit_slider, 0, ${Zone_Max});
+                        lv_slider_set_value(sensor_limit_slider, id(zone4_limit_value), LV_ANIM_OFF );
+                    - lvgl.label.update:
+                        id: sensor_limit_headline_label
+                        text: !lambda |-
+                          return "ZONE 4 ALARM";
+                    - lvgl.label.update:
+                        id: sensor_limit_label
+                        text: !lambda |-
+                          return (to_string(static_cast<int>(id(zone4_limit_value)))+"°C").c_str();
+                    - lvgl.widget.redraw:
+                        id: sensor_limit_slider
+                    - lvgl.page.show: sensor_limits_page
                   widgets:
                     - label:  # background
                         id: zone4_label_shadow
@@ -1654,6 +1675,169 @@ lvgl:
             radius: 0
             bg_color: 0
 
+    - id: sensor_limits_page
+      skip: true
+      pad_all: 0
+      on_load:
+        then:
+          - lvgl.widget.refresh: sensor_limits_max_value
+          - lambda: |-
+              // Clamp sensor_limit_value to sensor_max_value if needed
+              if (id(sensor_limit_value) > id(sensor_max_value)) {
+                id(sensor_limit_value) = id(sensor_max_value);
+              }
+              lv_slider_set_value(sensor_limit_slider, id(sensor_limit_value), LV_ANIM_OFF);
+              lv_label_set_text(sensor_limit_label, (std::to_string(id(sensor_limit_value)) + "°C").c_str());
+      widgets:
+        - obj:
+            id: sensor_limit_headline_bar
+            x: 0
+            y: 0
+            width: 304
+            height: 20
+            border_color: !lambda return lv_color_hex(id(color_75));
+            border_width: 10
+            border_side:
+              - TOP
+            radius: 10
+            pad_all: 0
+            bg_color: 0
+        - label:
+            id: sensor_limit_headline_label
+            x: 82
+            y: -4
+            width: 140
+            bg_opa: COVER
+            text_font: MONTSERRAT_BOLD_FONT_14
+            text_align: CENTER
+            text_color: !lambda return lv_color_hex(id(color_75));
+            text: "SENSOR 1 ALARM"
+        - label:
+            id: sensor_limits_min_value
+            x: 30
+            y: 30
+            width: 40
+            text_font: MONTSERRAT_16
+            text_align: LEFT
+            text_color: !lambda return lv_color_hex(id(color_75));
+            text: "0"
+        - label:
+            id: sensor_limits_max_value
+            x: 234
+            y: 30
+            width: 40
+            text_font: MONTSERRAT_16
+            text_align: RIGHT
+            text_color: !lambda return lv_color_hex(id(color_75));
+            text: !lambda |-
+              return to_string(static_cast<int>(id(sensor_max_value)));
+        - slider:
+            id: sensor_limit_slider
+            x: 30
+            y: 75
+            height: 15
+            width: 244
+            bg_color: !lambda return lv_color_hex(id(color_25));
+            min_value: 0
+            max_value: ${Zone_Max}
+            value: !lambda return id(sensor_limit_value);
+            adv_hittest: true
+            indicator:
+              bg_color: !lambda return lv_color_hex(id(color_50));
+            knob:
+              bg_color: !lambda return lv_color_hex(id(color_100));
+            on_value:
+              - lambda: id(sensor_limit_value) = x;
+              - lvgl.label.update:
+                  id: sensor_limit_label
+                  text: !lambda |-
+                    return (to_string(static_cast<int>(id(sensor_limit_value))) + "°C").c_str();
+        - label:
+            id: sensor_limit_label
+            x: 122
+            y: 30
+            width: 60
+            text_font: MONTSERRAT_20
+            text_align: CENTER
+            text: "0°C"
+            text_color: !lambda return lv_color_hex(id(color_100));
+
+        - button:
+            id: sensor_limits_button_clear
+            x: 0
+            y: 120
+            width: 142
+            height: 52
+            bg_color: !lambda return lv_color_hex(id(color_50));
+            shadow_color: !lambda return lv_color_hex(id(color_25));
+            widgets:
+              - label:
+                  id: sensor_limits_button_clear_label
+                  align: CENTER
+                  text_font: MONTSERRAT_26
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  bg_color: !lambda return lv_color_hex(id(color_50));
+                  text: "CLR"
+            on_click:
+              then:
+                - lambda: |-
+                    id(sensor_limit_value) = 0;
+                - lvgl.slider.update:
+                    id: sensor_limit_slider
+                    value: !lambda return id(sensor_limit_value);
+        - button:
+            id: sensor_limits_button_okay
+            x: 162
+            y: 120
+            width: 142
+            height: 52
+            bg_color: !lambda return lv_color_hex(id(color_50));
+            shadow_color: !lambda return lv_color_hex(id(color_25));
+            widgets:
+              - label:
+                  id: sensor_limits_button_okay_label
+                  align: CENTER
+                  text_font: MONTSERRAT_26
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  bg_color: !lambda return lv_color_hex(id(color_50));
+                  text: "OK"
+            on_click:
+              then:
+              - lambda: |-
+                  switch ( id(sensor_index) ){
+                    case 1:
+                      id(zone1_limit_value) = id(sensor_limit_value);
+                      break;
+                    case 2:
+                      id(zone2_limit_value) = id(sensor_limit_value);
+                      break;
+                    case 3:
+                      id(zone3_limit_value) = id(sensor_limit_value);
+                      break;
+                    case 4:
+                      id(zone4_limit_value) = id(sensor_limit_value);
+                      break;
+                    case 5:
+                      id(sensor1_limit_value) = id(sensor_limit_value);
+                      if( id(sensor1_limit_value) == 0 )  id(active_sensors) &= ~0x01;
+                      break;
+                    case 6:
+                      id(sensor2_limit_value) = id(sensor_limit_value);
+                      if( id(sensor2_limit_value) == 0 )  id(active_sensors) &= ~0x02;
+                      break;
+                    case 7:
+                      id(sensor3_limit_value) = id(sensor_limit_value);
+                      if( id(sensor3_limit_value) == 0 )  id(active_sensors) &= ~0x04;
+                      break;
+                    case 8:
+                      id(sensor4_limit_value) = id(sensor_limit_value);
+                      if( id(sensor4_limit_value) == 0 )  id(active_sensors) &= ~0x08;
+                      break;
+                  }
+              # refresh all widgets depending on limits
+              - script.execute: refresh_all_limits
+
+              - lvgl.page.show: arcs_page
     # - id: main_page
     #   width: 100%
     #   bg_color: 0x000000
@@ -1777,6 +1961,83 @@ script:
           red: 80%
           green: 0%
           blue: 100%
+
+  - id: refresh_all_limits
+    then:
+      - lvgl.widget.refresh:
+          - zone1_label
+          - zone1_label_shadow
+          - zone1_label_large
+          - zone1_label_large_shadow
+          - zone1_limit_arc
+          - zone1_limit_label
+          - zone1_limit_label_shadow
+          - zone1_limit_label_bell
+          - zone2_label
+          - zone2_label_shadow
+          - zone2_label_large
+          - zone2_label_large_shadow
+          - zone2_limit_arc
+          - zone2_limit_label
+          - zone2_limit_label_shadow
+          - zone2_limit_label_bell
+          - zone3_label
+          - zone3_label_shadow
+          - zone3_label_large
+          - zone3_label_large_shadow
+          - zone3_limit_arc
+          - zone3_limit_label
+          - zone3_limit_label_shadow
+          - zone3_limit_label_bell
+          - zone4_label
+          - zone4_label_shadow
+          - zone4_label_large
+          - zone4_label_large_shadow
+          - zone4_limit_arc
+          - zone4_limit_label
+          - zone4_limit_label_shadow
+          - zone4_limit_label_bell
+          # - sensor1_obj
+          # - sensor1_label
+          # - sensor1_label_shadow
+          # - sensor1_label_large
+          # - sensor1_label_large_shadow
+          # - sensor1_limit_arc
+          # - sensor1_limit_label
+          # - sensor1_limit_label_shadow
+          # - sensor1_limit_label_bell
+          # - sensor1_battery
+          # - sensor2_obj
+          # - sensor2_label
+          # - sensor2_label_shadow
+          # - sensor2_label_large
+          # - sensor2_label_large_shadow
+          # - sensor2_limit_arc
+          # - sensor2_limit_label
+          # - sensor2_limit_label_shadow
+          # - sensor2_limit_label_bell
+          # - sensor2_battery
+          # - sensor3_obj
+          # - sensor3_label
+          # - sensor3_label_shadow
+          # - sensor3_label_large
+          # - sensor3_label_large_shadow
+          # - sensor3_limit_arc
+          # - sensor3_limit_label
+          # - sensor3_limit_label_shadow
+          # - sensor3_limit_label_bell
+          # - sensor3_battery
+          # - sensor4_obj
+          # - sensor4_label
+          # - sensor4_label_shadow
+          # - sensor4_label_large
+          # - sensor4_label_large_shadow
+          # - sensor4_limit_arc
+          # - sensor4_limit_label
+          # - sensor4_limit_label_shadow
+          # - sensor4_limit_label_bell
+          # - sensor4_battery
+      - lvgl.widget.redraw:
 
   - id: hide_boot_screen
     then:
@@ -2052,22 +2313,19 @@ script:
       #     - timer_button_set_label
       # - delay: 1ms
 
-      # # Chunk 8: Sensor limit widgets
-      # - lvgl.widget.refresh:
-      #     - sensor_limit_headline_bar
-      #     - sensor_limit_headline_label
-      #     - sensor_limits_min_value
-      #     - sensor_limits_max_value
-      #     - sensor_limit_slider
-      #     - sensor_limits_hundreds_roller
-      #     - sensor_limits_tens_roller
-      #     - sensor_limits_ones_roller
-      #     - sensor_limits_unit
-      #     - sensor_limits_button_clear
-      #     - sensor_limits_button_clear_label
-      #     - sensor_limits_button_okay
-      #     - sensor_limits_button_okay_label
-      # - delay: 1ms
+      # Chunk 8: Sensor limit widgets
+      - lvgl.widget.refresh:
+          - sensor_limit_headline_bar
+          - sensor_limit_headline_label
+          - sensor_limits_min_value
+          - sensor_limits_max_value
+          - sensor_limit_label
+          - sensor_limit_slider
+          - sensor_limits_button_clear
+          - sensor_limits_button_clear_label
+          - sensor_limits_button_okay
+          - sensor_limits_button_okay_label
+      - delay: 1ms
 
       # # Chunk 9: Settings BLE & WiFi widgets
       # - lvgl.widget.refresh:
@@ -2138,42 +2396,28 @@ script:
       #     - settings_persist_hint_button
       #     - settings_persist_hint_button_label
 
-      # - lambda: |-
-      #     // Update nested parts
+      - lambda: |-
+          // Update nested parts
 
-      #     lv_obj_set_style_arc_color(zone1_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(zone2_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(zone3_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(zone4_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-          # lv_obj_set_style_arc_color(zone1_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(zone2_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(zone3_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(zone4_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor1_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor2_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor3_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor4_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor1_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor2_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor3_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_arc_color(sensor4_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone1_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone2_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone3_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone4_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone1_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone2_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone3_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          lv_obj_set_style_arc_color(zone4_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor1_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor2_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor3_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor4_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor1_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor2_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor3_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
+          // lv_obj_set_style_arc_color(sensor4_limit_arc, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
 
-      #     lv_obj_set_style_text_color(id(timer_roller_h)->obj, lv_color_hex(id(color_100)), LV_PART_SELECTED);
-      #     lv_obj_set_style_bg_color(id(timer_roller_h)->obj, lv_color_hex(id(color_25)), LV_PART_SELECTED);
-      #     lv_obj_set_style_text_color(id(timer_roller_m)->obj, lv_color_hex(id(color_100)), LV_PART_SELECTED);
-      #     lv_obj_set_style_bg_color(id(timer_roller_m)->obj, lv_color_hex(id(color_25)), LV_PART_SELECTED);
-      #     lv_obj_set_style_text_color(id(timer_roller_s)->obj, lv_color_hex(id(color_100)), LV_PART_SELECTED);
-      #     lv_obj_set_style_bg_color(id(timer_roller_s)->obj, lv_color_hex(id(color_25)), LV_PART_SELECTED);
-
-      #     lv_obj_set_style_bg_color(sensor_limit_slider, lv_color_hex(id(color_50)), LV_PART_INDICATOR);
-      #     lv_obj_set_style_bg_color(sensor_limit_slider, lv_color_hex(id(color_100)), LV_PART_KNOB);
-      #     lv_obj_set_style_text_color(id(sensor_limits_hundreds_roller)->obj, lv_color_hex(id(color_100)), LV_PART_SELECTED);
-      #     lv_obj_set_style_bg_color(id(sensor_limits_hundreds_roller)->obj, lv_color_hex(id(color_25)), LV_PART_SELECTED);
-      #     lv_obj_set_style_text_color(id(sensor_limits_tens_roller)->obj, lv_color_hex(id(color_100)), LV_PART_SELECTED);
-      #     lv_obj_set_style_bg_color(id(sensor_limits_tens_roller)->obj, lv_color_hex(id(color_25)), LV_PART_SELECTED);
-      #     lv_obj_set_style_text_color(id(sensor_limits_ones_roller)->obj, lv_color_hex(id(color_100)), LV_PART_SELECTED);
-      #     lv_obj_set_style_bg_color(id(sensor_limits_ones_roller)->obj, lv_color_hex(id(color_25)), LV_PART_SELECTED);
-
+          lv_obj_set_style_bg_color(sensor_limit_slider, lv_color_hex(id(color_50)), LV_PART_INDICATOR);
+          lv_obj_set_style_bg_color(sensor_limit_slider, lv_color_hex(id(color_100)), LV_PART_KNOB);
 
       #     static constexpr lv_style_selector_t TABITEM_CHECKED =
       #         static_cast<lv_style_selector_t>(LV_PART_ITEMS) |
