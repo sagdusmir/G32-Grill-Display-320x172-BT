@@ -13,8 +13,6 @@ substitutions:
   name: g32-display-bt-mini
   device_description: "Monitor an OW G32 grill (mini)"
   version: "BTmini 0.1.0"
-  url_qrcode: "https://github.com/sagdusmir/G32-Grill-Display-320x172-BT"
-  url_check_for_updates: "https://api.github.com/repos/sagdusmir/G32-Grill-Display-320x172-BT/releases/latest"
 
   # Enter data of the newly created Home Assistant ESPHome device. Example:
   api_encryption_key: "F1fyywUUE1DWzu0OzhDkyc4yAnfGwyEfsVNvhytrU6l="
@@ -169,14 +167,13 @@ wifi:
   on_connect:
     then:
       - rtttl.play: ${Wifi_Connect_Sound}
-      # - globals.set:
-      #     id: wifi_connected
-      #     value: 'true'
-      # - globals.set:
-      #     id: apply_wifi_started_by_user
-      #     value: 'false'
-      # - lvgl.widget.refresh: wifi_connect_label
-      # - script.execute: check_for_updates
+      - globals.set:
+          id: wifi_connected
+          value: 'true'
+      - globals.set:
+          id: apply_wifi_started_by_user
+          value: 'false'
+      - lvgl.widget.refresh: wifi_connect_label
 
 # External Components
 external_components:
@@ -393,6 +390,9 @@ globals:
   - id: ble_meaters_found  # bits set/reset for every active/inactive Meater probe
     type: int
     initial_value: '0'
+  - id: apply_wifi_started_by_user  # for supressing sounds
+    type: bool
+    initial_value: 'false'
 
   - id: color_schemes
     type: std::map<std::string, std::vector<uint32_t>>
@@ -597,16 +597,20 @@ globals:
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
-    id: ICON_FONT_24
-    size: 24
+    id: ICON_FONT_20
+    size: 20
     glyphs:
-      - "\U000F05A9" # mdi-wifi
-      - "\U000F00AF" # mdi-bluetooth
       - "\U000F12A3" # mdi-battery-high
       - "\U000F12A2" # mdi-battery-medium
       - "\U000F12A1" # mdi-battery-low
       - "\U000F008E" # mdi-battery-outline
-      - "\U000F17E6" # mdi-battery-plus
+  - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
+    # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
+    id: ICON_FONT_18
+    size: 18
+    glyphs:
+      - "\U000F05A9" # mdi-wifi
+      - "\U000F00AF" # mdi-bluetooth
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     id: ICON_FONT_9
@@ -849,9 +853,9 @@ lvgl:
             - obj: # symbol for batter low warning
                 id: battery_symbol_obj
                 x: 0
-                y: 0
-                width: 10
-                height: 12
+                y: 11
+                width: 16
+                height: 20
                 bg_color: 0
                 pad_all: 0
                 outline_width: 0
@@ -863,11 +867,11 @@ lvgl:
                 widgets:
                   - label:
                       id: battery_symbol
-                      x: 3
-                      y: -2
-                      text_font: ICON_FONT_24
-                      text_align: CENTER
-                      width: 10
+                      x: 0
+                      y: 0
+                      text_font: ICON_FONT_20
+                      text_align: LEFT
+                      width: 15
                       text_color: !lambda |-
                         if( id(battery_soc_value) <= id(settings_min_soc_value_persistent) ) {
                           return lv_color_hex(id(color_bad));
@@ -880,6 +884,48 @@ lvgl:
                             soc <= 40 ? 1 :
                             soc <= 80 ? 2 : 3;
                         return icons[idx];
+                  - line:
+                      id: battery_symbol_fix  # glyph scaling artefact
+                      points:
+                        - 8, 6
+                        - 12, 6
+                      line_width: 1
+                      line_rounded: false
+                      line_color: !lambda |-
+                          float soc = id(battery_soc_value);
+                          if (soc <= 80) {
+                            return lv_color_hex(0x000000);
+                          }
+                          if( id(battery_soc_value) <= id(settings_min_soc_value_persistent) ) {
+                            return lv_color_hex(id(color_bad));
+                          }
+                          return lv_color_hex(id(color_good));
+            - label: # symbol for successfull BT connection
+                id: g32bt_connect_label
+                x: 0
+                y: 31
+                text_font: ICON_FONT_18
+                text_align: LEFT
+                width: 16
+                text_color: !lambda |-
+                  if( id(g32_connected) ) {
+                    return lv_color_hex(id(color_good));
+                  }
+                  return lv_color_hex(id(color_00));
+                text: "\U000F00AF"
+            - label: # symbol for successfull WIFI connection
+                id: wifi_connect_label
+                x: 3
+                y: 51
+                text_font: MONTSERRAT_10
+                text_align: LEFT
+                width: 13
+                text_color: !lambda |-
+                  if( id(wifi_connected) ) {
+                    return lv_color_hex(id(color_good));
+                  }
+                  return lv_color_hex(id(color_00));
+                text: "\uF1EB" # WIFI symbol
 
   pages:
     - id: arcs_page
@@ -1676,6 +1722,42 @@ lvgl:
     #               text_font: MONTSERRAT_20
     #               text: "UR"
 
+sensor:
+  - platform: adc
+    pin: GPIO0
+    name: "Battery SOC"
+    unit_of_measurement: "%"
+    state_class: measurement
+    device_class: battery
+    accuracy_decimals: 0
+    attenuation: 12db          # input voltage range: 150mV --- 2450mV
+    samples: 16                # samples taken per update interval
+    filters:
+      - multiply: 1.72         # due to external voltage divider on adc input
+      - sliding_window_moving_average:
+          window_size: 15      # average over 15 values
+      - calibrate_linear:      # linearise voltage->SOC dependency
+          method: exact
+          datapoints:
+            - 3.00 ->   0.0    # <=3.00V = battery empty (0.0%)
+            - 3.36 ->   5.0
+            - 3.41 ->  10.0
+            - 3.48 ->  20.0
+            - 3.52 ->  30.0
+            - 3.56 ->  40.0
+            - 3.61 ->  50.0
+            - 3.70 ->  60.0
+            - 3.79 ->  70.0
+            - 3.89 ->  80.0
+            - 4.00 ->  90.0
+            - 4.05 -> 100.0    # >=4.05V = battery full (100.0%)
+      - clamp:
+          min_value: 0.0
+          max_value: 100.0
+    update_interval: 4s        # new value after 4s*15(=window size) = 60s!
+    on_value:
+      - lambda: id(battery_soc_value) = x;
+      - lvgl.widget.refresh: [battery_symbol, battery_symbol_fix]
 
 script:
   - id: flash_red
@@ -1799,16 +1881,12 @@ script:
       - lambda: |-
           lv_obj_set_style_arc_color(boot_spinner, lv_color_hex(id(color_100)), LV_PART_INDICATOR);
 
-      # # Chunk 1: Status bar widgets
-      # - lvgl.widget.refresh:
-      #     - cs_title
-      #     - battery_symbol
-      #     - battery_symbol_fix
-      #     - battery_soc_shadow
-      #     - battery_soc_label
-      #     - battery_soc_label_unit
-      #     - g32bt_connect_label
-      #     - wifi_connect_label
+      # Chunk 1: Status bar widgets
+      - lvgl.widget.refresh:
+          - battery_symbol
+          - battery_symbol_fix
+          - g32bt_connect_label
+          - wifi_connect_label
       #     - firebox_open_label
       #     - light_on_label
       #     - warning_on_label
