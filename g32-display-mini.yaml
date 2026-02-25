@@ -67,7 +67,6 @@ substitutions:
   MT_Disconnect_Sound: "plonk:d=16,o=5,b=100:a6,32p,a5"
   Wifi_Connect_Sound: "dadi:d=16,o=6,b=140:d6,32p,e6"
   Wifi_Disconnect_Sound: "siren:d=8,o=5,b=100:d,e,d,e,d,e,d,e"
-  Timer_Alarm_Sound: "didididi:d=16,o=6,b=140:e6,32p,e6,32p,e6,32p,e6"
   Zone_Limit_Alarm_Sound: "dadidadi:d=8,o=5,b=150:d,e,d,e,d,e,d,e"
   Sensor_Limit_Alarm_Sound: "didadida:d=8,o=5,b=150:e,d,e,d,e,d,e,d"
   New_MAC_Sound: "click:d=32,o=6,b=120:32c,32p"
@@ -274,17 +273,6 @@ light:
     platform: monochromatic
     output: gpio_backlight_pwm
     restore_mode: ALWAYS_ON
-  - platform: esp32_rmt_led_strip
-    name: "Onboard RGB LED"
-    id: board_rgb_led
-    pin:
-      number: GPIO8
-      ignore_strapping_warning: true
-    num_leds: 1
-    rgb_order: GRB           # ← this is the key for your board
-    chipset: ws2812
-    default_transition_length: 0s
-    # rmt_channel: 0         # only uncomment if you get a compile error about RMT
 
 rtttl:
   id: my_rtttl
@@ -312,58 +300,6 @@ interval:
             - script.execute: hide_boot_screen
 
 # Switch ON/OFF écran
-switch:
-  - platform: template  #### ANTI BURN
-    name: "Antiburn"
-    internal: true
-    id: switch_antiburn
-    icon: mdi:television-shimmer
-    optimistic: true
-    entity_category: "config"
-    turn_on_action:
-      - logger.log: "Starting Antiburn"
-      - if:
-          condition: lvgl.is_paused
-          then:
-            - lvgl.resume:
-            - lvgl.widget.redraw:
-      - lvgl.pause:
-          show_snow: true
-    turn_off_action:
-      - logger.log: "Stopping Antiburn"
-      - if:
-          condition: lvgl.is_paused
-          then:
-            - lvgl.resume:
-            - lvgl.widget.redraw:
-
-  - platform: template
-    name: "RGB LED Test"
-    id: rgb_test_switch
-    optimistic: true
-    turn_on_action:
-      - light.turn_on:
-          id: board_rgb_led
-          brightness: 80%
-          red: 100%
-          green: 0%
-          blue: 0%
-    turn_off_action:
-      - light.turn_off: board_rgb_led
-
-time:  ### Antiburn TIME
-  - platform: homeassistant
-    on_time:
-      - hours: 2,3,4,5
-        minutes: 5
-        seconds: 0
-        then:
-          - switch.turn_on: switch_antiburn
-      - hours: 2,3,4,5
-        minutes: 35
-        seconds: 0
-        then:
-          - switch.turn_off: switch_antiburn
 
 globals:
   - id: wifi_connected
@@ -2717,24 +2653,6 @@ sensor:
       - lvgl.widget.refresh: [battery_symbol, battery_symbol_fix]
 
 script:
-  - id: flash_red
-    then:
-      - light.turn_on:
-          id: board_rgb_led
-          brightness: 100%
-          red: 100%
-          green: 0%
-          blue: 0%
-
-  - id: set_purple
-    then:
-      - light.turn_on:
-          id: board_rgb_led
-          brightness: 40%
-          red: 80%
-          green: 0%
-          blue: 100%
-
   - id: refresh_all_limits
     then:
       - lvgl.widget.refresh:
