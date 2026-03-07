@@ -7,7 +7,7 @@
 [![Grill make](https://img.shields.io/badge/grill-OW_G32_Connected-critical)](https://www.grillsportverein.de/forum/threads/otto-wilde-g32-smarthome.369079/page-999)
 
 
-This repository is a stripped doen version of https://github.com/sagdusmir/G32-Grill-Display-480x320-BTpref
+This repository is a stripped down version of https://github.com/sagdusmir/G32-Grill-Display-480x320-BTpref
 
 
 Focus: **mobile, cloud-independent replacement** for the official Otto Wilde app / Grill Buddy — no cloud login, no Otto Wilde servers. Direct BLE connection to the grill (tested with firmware **v1.4.5**; older "v13" not compatible).
