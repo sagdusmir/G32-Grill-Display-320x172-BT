@@ -9,7 +9,7 @@
 
 Focus: **mobile, cloud-independent replacement** for the official Otto Wilde app / Grill Buddy — no cloud login, no Otto Wilde servers. Direct BLE connection to the grill (tested with firmware **v1.4.5**; older "v13" not compatible).
 
-<img alt="Teaser" src="https://github.com/user-attachments/assets/0f5f5065-4ec5-47f8-8567-3b7de9df23e4" width="200">
+<img alt="Teaser" src="https://github.com/user-attachments/assets/3e31ede1-723a-4878-9369-b038c473259f" width="200">
 Bare device during testing.
 
 # Table of Contents
