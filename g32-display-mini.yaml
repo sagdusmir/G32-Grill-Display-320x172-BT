@@ -3,20 +3,16 @@ substitutions:
   # You will propably need to do changes only to the following lines (if at all): #
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-  # General information for customizing optional hardware:
-  # Speaker / Buzzer:
-  # By default the buzzer is pre-configured. See two config blocks "RTTTL buzzer (GPIO pin)".
-  # Configuration for a speaker is disabled. See two config blocks "RTTTL speaker (speaker header, external DAC)"
-  # Just (un-)/comment the config blocks for the hardware you would like to use.
-
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-bt-mini
   device_description: "Monitor an OW G32 grill (mini)"
   version: "BTmini 0.1.0"
 
+  # either pull values from secrets.yaml
+  # or have it directly in this file
   wifi_ssid: !secret wifi_ssid
-  # wifi_ssid: "INSERT_YOUR_WIFI_SSID"
   wifi_password: !secret wifi_password
+  # wifi_ssid: "INSERT_YOUR_WIFI_SSID"
   # wifi_password: "INSERT_YOUR_WIFI_PASSWORD"
 
   # Enter data of the newly created Home Assistant ESPHome device. Example:
