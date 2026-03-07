@@ -216,10 +216,7 @@ esp32_ble_tracker:
                     id(my_rtttl).play("${New_MAC_Sound}");
                     ESP_LOGI("ble_adv", "Meater MAC address: %s", x.address_str().c_str());
                     id(settings_meater_mac_addresses)[idx] = x.address_str();
-                    std::array<lv_obj_t *, 4> meater_labels = {id(settings_meater0_label), id(settings_meater1_label), id(settings_meater2_label), id(settings_meater3_label)};
-                    std::array<lv_obj_t *, 4> meater_updated = {id(settings_meater0_updated), id(settings_meater1_updated), id(settings_meater2_updated), id(settings_meater3_updated)};
-                    lv_obj_clear_flag(meater_updated[idx], LV_OBJ_FLAG_HIDDEN);
-                    lv_label_set_text(meater_labels[idx], x.address_str().c_str());
+                    id(apply_meater_mac_addresses).execute();
                   }
                 }
               }
@@ -672,9 +669,9 @@ globals:
   - id: settings_g32_mac_address_persistent
     type: std::string
     initial_value: '"${g32_mac_address}"' 
-  - id: settings_meater_mac_addresses_persistent
-    type: std::string
-    initial_value: '"${meater_mac_address},${meater_mac_address},${meater_mac_address},${meater_mac_address}"'
+  - id: settings_meater_mac_addresses
+    type: std::array<std::string, 4>
+    initial_value: '{"${meater_mac_address}","${meater_mac_address}","${meater_mac_address}","${meater_mac_address}"}'
   - id: settings_min_gas_value_persistent
     type: int
     initial_value: '${SETTINGS_MIN_GAS_VALUE}'
@@ -720,7 +717,6 @@ font:
     glyphs:
       - "\U000F05A9" # mdi-wifi
       - "\U000F00AF" # mdi-bluetooth
-      - "\U000F1358" # mdi-propane-tank-outline      
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     id: ICON_FONT_9
@@ -1999,7 +1995,7 @@ lvgl:
                         id: sensor1_label
                         x: 0
                         y: 15
-                        width: 72
+                        width: 62
                         bg_opa: TRANSP
                         text_align: RIGHT
                         text_font: SEGMENT_FONT_20
@@ -3188,6 +3184,256 @@ sensor:
             return int(x);
       - lvgl.widget.refresh: [gas_percent_bar]
 
+  - platform: ble_client
+    ble_client_id: meater0
+    type: characteristic
+    name: "Meater 1 Tip"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      float t_tip = (tip + 8.0) / 16.0;
+      id(meater_values_tip)[0] = t_tip;
+      id(g32_probe1).publish_state(int(t_tip+0.5));
+      ESP_LOGI("meater", "0 tip %.2f", t_tip);
+      if (t_tip > id(meater_tip_alert)) {
+        id(meater_alarms_tip) |= 0x01;
+      } else {
+        id(meater_alarms_tip) &= ~0x01;
+      }
+      return t_tip;
+  - platform: ble_client
+    ble_client_id: meater1
+    type: characteristic
+    name: "Meater 2 Tip"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      float t_tip = (tip + 8.0) / 16.0;
+      id(meater_values_tip)[1] = t_tip;
+      id(g32_probe2).publish_state(int(t_tip+0.5));
+      ESP_LOGI("meater", "1 tip %.2f", t_tip);
+      if (t_tip > id(meater_tip_alert)) {
+        id(meater_alarms_tip) |= 0x02;
+      } else {
+        id(meater_alarms_tip) &= ~0x02;
+      }
+      return t_tip;
+  - platform: ble_client
+    ble_client_id: meater2
+    type: characteristic
+    name: "Meater 3 Tip"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      float t_tip = (tip + 8.0) / 16.0;
+      id(meater_values_tip)[2] = t_tip;
+      id(g32_probe3).publish_state(int(t_tip+0.5));
+      ESP_LOGI("meater", "2 tip %.2f", t_tip);
+      if (t_tip > id(meater_tip_alert)) {
+        id(meater_alarms_tip) |= 0x04;
+      } else {
+        id(meater_alarms_tip) &= ~0x04;
+      }
+      return t_tip;
+  - platform: ble_client
+    ble_client_id: meater3
+    type: characteristic
+    name: "Meater 4 Tip"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      float t_tip = (tip + 8.0) / 16.0;
+      id(meater_values_tip)[3] = t_tip;
+      id(g32_probe4).publish_state(int(t_tip+0.5));
+      ESP_LOGI("meater", "3 tip %.2f", t_tip);
+      if (t_tip > id(meater_tip_alert)) {
+        id(meater_alarms_tip) |= 0x08;
+      } else {
+        id(meater_alarms_tip) &= ~0x08;
+      }
+      return t_tip;
+
+  - platform: ble_client
+    ble_client_id: meater0
+    type: characteristic
+    name: "Meater 1 Ambient"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      uint16_t ra = x[2] + (x[3] << 8);
+      uint16_t oa = x[4] + (x[5] << 8);
+      uint16_t min_val = 48;
+      float t_ambient = (tip + std::max(0, (((ra - std::min(min_val, oa)) * 16 * 589) / 1487)) + 8.0) / 16;
+      id(meater_values_ambient)[0] = t_ambient;
+      ESP_LOGI("meater", "0 ambient %.2f", t_ambient);
+      if (t_ambient > id(meater_ambient_alert)) {
+        id(meater_alarms_ambient) |= 0x01;
+      } else {
+        id(meater_alarms_ambient) &= ~0x01;
+      }
+      return t_ambient;
+    on_value:
+      - script.execute: refresh_all_meater_alerts
+
+  - platform: ble_client
+    ble_client_id: meater1
+    type: characteristic
+    name: "Meater 2 Ambient"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      uint16_t ra = x[2] + (x[3] << 8);
+      uint16_t oa = x[4] + (x[5] << 8);
+      uint16_t min_val = 48;
+      float t_ambient = (tip + std::max(0, (((ra - std::min(min_val, oa)) * 16 * 589) / 1487)) + 8.0) / 16;
+      id(meater_values_ambient)[1] = t_ambient;
+      ESP_LOGI("meater", "1 ambient %.2f", t_ambient);
+      if (t_ambient > id(meater_ambient_alert)) {
+        id(meater_alarms_ambient) |= 0x02;
+      } else {
+        id(meater_alarms_ambient) &= ~0x02;
+      }
+      return t_ambient;
+    on_value:
+      - script.execute: refresh_all_meater_alerts
+
+  - platform: ble_client
+    ble_client_id: meater2
+    type: characteristic
+    name: "Meater 3 Ambient"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      uint16_t ra = x[2] + (x[3] << 8);
+      uint16_t oa = x[4] + (x[5] << 8);
+      uint16_t min_val = 48;
+      float t_ambient = (tip + std::max(0, (((ra - std::min(min_val, oa)) * 16 * 589) / 1487)) + 8.0) / 16;
+      id(meater_values_ambient)[2] = t_ambient;
+      ESP_LOGI("meater", "2 ambient %.2f", t_ambient);
+      if (t_ambient > id(meater_ambient_alert)) {
+        id(meater_alarms_ambient) |= 0x04;
+      } else {
+        id(meater_alarms_ambient) &= ~0x04;
+      }
+      return t_ambient;
+    on_value:
+      - script.execute: refresh_all_meater_alerts
+
+  - platform: ble_client
+    ble_client_id: meater3
+    type: characteristic
+    name: "Meater 4 Ambient"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_temp}
+    update_interval: 10s
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    lambda: |-
+      uint16_t tip = x[0] + (x[1] << 8);
+      uint16_t ra = x[2] + (x[3] << 8);
+      uint16_t oa = x[4] + (x[5] << 8);
+      uint16_t min_val = 48;
+      float t_ambient = (tip + std::max(0, (((ra - std::min(min_val, oa)) * 16 * 589) / 1487)) + 8.0) / 16;
+      id(meater_values_ambient)[3] = t_ambient;
+      ESP_LOGI("meater", "3 ambient %.2f", t_ambient);
+      if (t_ambient > id(meater_ambient_alert)) {
+        id(meater_alarms_ambient) |= 0x08;
+      } else {
+        id(meater_alarms_ambient) &= ~0x08;
+      }
+      return t_ambient;
+    on_value:
+      - script.execute: refresh_all_meater_alerts
+
+  - platform: ble_client
+    ble_client_id: meater0
+    type: characteristic
+    name: "Meater 1 Battery SOC"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_battery}
+    update_interval: 10s
+    accuracy_decimals: 0
+    lambda: |-
+      uint16_t t = (x[0] + x[1]) * 10;
+      id(meater_values_battery)[0] = t;
+      ESP_LOGI("meater", "0 battery %d%%", t);
+      return t;
+  - platform: ble_client
+    ble_client_id: meater1
+    type: characteristic
+    name: "Meater 2 Battery SOC"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_battery}
+    update_interval: 10s
+    accuracy_decimals: 0
+    lambda: |-
+      uint16_t t = (x[0] + x[1]) * 10;
+      id(meater_values_battery)[1] = t;
+      ESP_LOGI("meater", "1 battery %d%%", t);
+      return t;
+  - platform: ble_client
+    ble_client_id: meater2
+    type: characteristic
+    name: "Meater 3 Battery SOC"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_battery}
+    update_interval: 10s
+    accuracy_decimals: 0
+    lambda: |-
+      uint16_t t = (x[0] + x[1]) * 10;
+      id(meater_values_battery)[2] = t;
+      ESP_LOGI("meater", "2 battery %d%%", t);
+      return t;
+  - platform: ble_client
+    ble_client_id: meater3
+    type: characteristic
+    name: "Meater 4 Battery SOC"
+    service_uuid: ${meater_service_uuid}
+    characteristic_uuid: ${meater_characteristic_uuid_battery}
+    update_interval: 10s
+    accuracy_decimals: 0
+    lambda: |-
+      uint16_t t = (x[0] + x[1]) * 10;
+      id(meater_values_battery)[3] = t;
+      ESP_LOGI("meater", "3 battery %d%%", t);
+      return t;
+
 binary_sensor:
   - platform: status
     name: "Status ESP G32"
@@ -3341,8 +3587,6 @@ script:
                 id(active_meaters) = 0;
                 id(meater_alarms_tip) = 0;
                 id(meater_alarms_ambient) = 0;
-            # - script.execute: apply_wifi
-            # - script.execute: apply_meater_mac_addresses
             - lambda: |-
                 id(apply_color_scheme).execute();
             - lvgl.widget.hide: boot_screen
@@ -3400,36 +3644,31 @@ script:
     then:
         # this ensures the ble_client changes MAC at runtime
         - lambda: !lambda |-
-            xTaskCreatePinnedToCore([](void *) {
-              uint64_t addr = 0;
-              uint64_t b1, b2, b3, b4, b5, b6;
-              if (sscanf(id(settings_g32_mac_address_persistent).c_str(), "%llx:%llx:%llx:%llx:%llx:%llx", &b1, &b2, &b3, &b4, &b5, &b6) == 6) {
-                addr = (b1 << 40) | (b2 << 32) | (b3 << 24) | (b4 << 16) | (b5 << 8) | b6;
-              }
-              id(ow_g32).set_address(addr);
-              ESP_LOGI("settings", "set G32 MAC address to %s", id(settings_g32_mac_address_persistent).c_str());
-              vTaskDelete(NULL);
-            }, "apply_mac_task", 4096, NULL, 1, NULL, 0);
+            uint64_t addr = 0;
+            uint64_t b1, b2, b3, b4, b5, b6;
+            if (sscanf(id(settings_g32_mac_address_persistent).c_str(), "%llx:%llx:%llx:%llx:%llx:%llx", &b1, &b2, &b3, &b4, &b5, &b6) == 6) {
+              addr = (b1 << 40) | (b2 << 32) | (b3 << 24) | (b4 << 16) | (b5 << 8) | b6;
+            }
+            id(ow_g32).set_address(addr);
+            ESP_LOGI("settings", "set G32 MAC address to %s", id(settings_g32_mac_address_persistent).c_str());
 
   - id: apply_meater_mac_addresses
     then:
         # this ensures the ble_client changes MAC at runtime
         - lambda: !lambda |-
-            xTaskCreatePinnedToCore([](void *) {
-              std::array<esphome::ble_client::BLEClient *, 4> meaters = {id(meater0), id(meater1), id(meater2), id(meater3)};
-              std::string t_meater_mac_addresses = id(settings_meater_mac_addresses_persistent);
-              for (int i = 0; i < 4; i++) {
-                std::string mac = t_meater_mac_addresses.substr(i * 18, 17);
-                uint64_t addr = 0;
-                uint64_t b1, b2, b3, b4, b5, b6;
-                if (sscanf(mac.c_str(), "%llx:%llx:%llx:%llx:%llx:%llx", &b1, &b2, &b3, &b4, &b5, &b6) == 6) {
-                  addr = (b1 << 40) | (b2 << 32) | (b3 << 24) | (b4 << 16) | (b5 << 8) | b6;
-                }
+            std::array<esphome::ble_client::BLEClient *, 4> meaters = {id(meater0), id(meater1), id(meater2), id(meater3)};
+            for (int i = 0; i < 4; i++) {
+              std::string mac = id(settings_meater_mac_addresses)[i];
+              uint64_t addr = 0;
+              uint64_t b1, b2, b3, b4, b5, b6;
+              if (sscanf(mac.c_str(), "%llx:%llx:%llx:%llx:%llx:%llx", &b1, &b2, &b3, &b4, &b5, &b6) == 6) {
+                addr = (b1 << 40) | (b2 << 32) | (b3 << 24) | (b4 << 16) | (b5 << 8) | b6;
+              }
+              if (addr != meaters[i]->get_address()) {
                 meaters[i]->set_address(addr);
                 ESP_LOGI("settings", "set meater%d MAC address to %s", i, mac.c_str());
               }
-              vTaskDelete(NULL);
-            }, "apply_meater_task", 4096, NULL, 1, NULL, 0);
+            }
 
   - id: apply_color_scheme
     mode: restart
@@ -3504,7 +3743,6 @@ script:
       # Chunk 2: Gas widgets
       - lvgl.widget.refresh:
           - gas_level_obj
-          - gas_icon
           - gas_percent_bar
       - delay: 1ms
 
@@ -3629,35 +3867,6 @@ script:
           - sensor_limits_button_okay
           - sensor_limits_button_okay_label
       - delay: 1ms
-
-      # # Chunk 9: Settings BLE & WiFi widgets
-      # - lvgl.widget.refresh:
-      #     - settings_ble_mac_title
-      #     - settings_mac_address_label
-      #     - settings_mac_address_updated
-      #     - settings_g32_mac_address_search_button
-      #     - settings_g32_mac_address_search_button_label
-      #     - settings_g32_mac_address_abort_button
-      #     - settings_g32_mac_address_abort_button_label
-      # - delay: 1ms
-
-      # # Chunk 10: Settings switches and rollers
-      # - lvgl.widget.refresh:
-      #     - settings_hide_soc_switch_label
-      #     - settings_hide_soc_switch
-      #     - settings_hide_gas_level_switch_label
-      #     - settings_hide_gas_level_switch
-      #     - settings_show_time_switch_label
-      #     - settings_show_time_switch
-      #     - settings_hide_timer_switch_label
-      #     - settings_hide_timer_switch
-      #     - settings_enable_temperature_limits_switch_label
-      #     - settings_enable_temperature_limits_switch
-      #     - settings_enable_auto_hiding_temperature_limits_switch_label
-      #     - settings_enable_auto_hiding_temperature_limits_switch
-      #     - settings_hide_inactive_sensors_switch_label
-      #     - settings_hide_inactive_sensors_switch
-      # - delay: 1ms
 
       - lambda: |-
           // Update nested parts
