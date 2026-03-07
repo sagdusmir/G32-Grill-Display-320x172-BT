@@ -92,6 +92,7 @@ See [changelog.md](changelog.md).
    esphome run g32-display-mini.yaml
    ```
    You may be asked how the connection should be established.
+5. You might need to reset the device after flashing to get the display to work (push the RST button).
 
 ## Troubleshooting
 
