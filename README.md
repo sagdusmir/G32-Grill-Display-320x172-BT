@@ -70,7 +70,7 @@ See [changelog.md](changelog.md).
 ### Component Details
 
 * __ESP32 Dev Board__<br>
-  You need a "__JC3248W535C__". It is equipped with an ESP32-S3, WiFi, Bluetooth, a 480x320 Pixel 3,5" touchscreen, and everything you need. No additional memory card required.
+  You need a "__Waveshare ESP32-C6-Touch-LCD-1.47__". It is equipped with an ESP32-C6, WiFi, Bluetooth, a 320x172 Pixel 1.47" touchscreen, and everything you need. No additional memory card required.
 
 * __Buzzer__<br>
   UNTESTED:  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6
