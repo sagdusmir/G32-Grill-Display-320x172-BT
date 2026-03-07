@@ -827,6 +827,7 @@ font:
       - "4"
       - " "
 
+
 lvgl:
   buffer_size: 50%
   displays: my_display

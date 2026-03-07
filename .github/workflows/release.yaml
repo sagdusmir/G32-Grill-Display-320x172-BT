@@ -5,7 +5,7 @@ on:
     branches:
       - main  # Change if your default branch is different (e.g., master)
     paths:
-      - 'g32-display.yaml'
+      - 'g32-display-mini.yaml'
 
 jobs:
   tag-and-release:
@@ -30,7 +30,7 @@ jobs:
       - name: Extract and clean version from YAML
         id: extract_version
         run: |
-          RAW=$(yq e '.substitutions.version' g32-display.yaml)
+          RAW=$(yq e '.substitutions.version' g32-display-mini.yaml)
           echo "Raw yq output: '$RAW'"
 
           # Remove surrounding quotes if present
@@ -102,28 +102,6 @@ jobs:
           git tag -a "${{ env.TAG_NAME }}" -m "${{ env.MESSAGE }}"
           git push origin "${{ env.TAG_NAME }}"
 
-      - name: Prepare release YAML with replacements
-        if: steps.check_tag.outputs.exists == 'false'
-        run: |
-          cp g32-display.yaml g32-display-variant.yaml
-          
-          # === ADD YOUR CUSTOM REPLACEMENTS HERE ===
-          # Examples:
-          # yq -i '.some.key = "new-value"' g32-display-variant.yaml
-          # yq -i '.wifi.password = "!secret wifi_password"' g32-display-variant.yaml
-          # sed -i '1i # Released configuration for version ${{ env.VERSION }}\n# Customize secrets.yaml before use' g32-display-variant.yaml
-          # yq -i 'del(.some.sensitive_section)' g32-display-variant.yaml
-
-          # 1. Uncomment speaker lines
-          sed -i '/variant[[:space:]]*\[speaker\]/ s/^\([[:space:]]*\)# \(.*\)$/\1\2/' "g32-display-variant.yaml"
-          # 2. Comment buzzer lines
-          sed -i '/variant[[:space:]]*\[buzzer\]/ s/^\([[:space:]]*\)\([^[:space:]#]\)/\1# \2/' "g32-display-variant.yaml"
-          mv g32-display-variant.yaml g32-display-with-speaker.yaml
-
-          cp g32-display.yaml g32-display-variant.yaml
-          # nothing to do
-          mv g32-display-variant.yaml g32-display-with-buzzer.yaml
-
       - name: Create/Release GitHub Release
         if: steps.check_tag.outputs.exists == 'false'
         uses: ncipollo/release-action@v1
@@ -131,7 +109,6 @@ jobs:
           tag: ${{ env.TAG_NAME }}
           name: ${{ env.VERSION }}
           body: ${{ env.MESSAGE }}
-          artifacts: g32-display-with-buzzer.yaml,g32-display-with-speaker.yaml
           token: ${{ secrets.GITHUB_TOKEN }}
           allowUpdates: false
           draft: false
