@@ -7,6 +7,9 @@
 [![Grill make](https://img.shields.io/badge/grill-OW_G32_Connected-critical)](https://www.grillsportverein.de/forum/threads/otto-wilde-g32-smarthome.369079/page-999)
 
 
+This repository is a stripped doen version of https://github.com/sagdusmir/G32-Grill-Display-480x320-BTpref
+
+
 Focus: **mobile, cloud-independent replacement** for the official Otto Wilde app / Grill Buddy — no cloud login, no Otto Wilde servers. Direct BLE connection to the grill (tested with firmware **v1.4.5**; older "v13" not compatible).
 
 <img alt="Teaser" src="https://github.com/user-attachments/assets/3e31ede1-723a-4878-9369-b038c473259f" width="200">
@@ -30,25 +33,47 @@ Bare device during testing.
 
 ### Implemented functionality
 
-- TODO
+- Real-time temperatures for up to **4 grill zones** + **4 external probes**
+- **Gas level** monitoring (if GasBuddy is installed)
+- **Alarms** — visual + optional buzzer for temperature limits and timer
+- Touchscreen configuration
+  - tap gauges to configure a temperature alarm
+- Multiple **color schemes** (predefined + easy to add your own)
+- **Connection & status icons** (BLE, WiFi, battery SOC)
+- **Optional battery monitoring** the state of charge (SOC) of a connected battery can be displayed
+- **Optional MEATER® integration** shows tip temperatures & battery SOC instead of G32 probes when connected. Starting with BTpref-retro2.4.6 there is an alert if temperature specs are exceeded.
+- **Optional Home Assistant** connectivity that exposes most of the measurements.
 
 See [changelog.md](changelog.md).
 
+### What is missing?
+* **Meater 2 plus (aka PRO) support:** Meater 2 plus units are not supported yet
+* **Gas Buddy:** calibration of a new gas bottle
+* **G32 light:** setting the brightness level for turning on the light in the lid
+
 ### Limitations
 * Everything that was mentioned above under [What is missing?](#what-is-missing)
-* Volume level of the optional buzzer is a bit low. This is the reason there is no volume control in the settings.
+* Volume level of the optional buzzer is a bit low.
 * Meater probes can only connect to a single device at a time. However, this does not prevent using a Meater Block.
 
 
 ## Hardware
 ### BOM
 
-TODO
+| Component                            | Qty | Source                                   | Costs        |
+|--------------------------------------|-----|------------------------------------------|--------------|
+| ESP32 Dev Board                      | 1   | Amazon, AliExpress                       |   ~17€ - 27€ |
+| Buzzer (optional)                    | 1   | AliExpress, Amazon, eBay                 |       ~2€    |
+| Connection Cable                     | 1   | your existing collection of cables       |       ~0€    |
 
 
 ### Component Details
 
-TODO
+* __ESP32 Dev Board__<br>
+  You need a "__JC3248W535C__". It is equipped with an ESP32-S3, WiFi, Bluetooth, a 480x320 Pixel 3,5" touchscreen, and everything you need. No additional memory card required.
+
+* __Buzzer__<br>
+  UNTESTED:  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6
 
 
 ## Uploading the software to the ESP
@@ -86,7 +111,7 @@ TODO
 ## Acknowledgments
 This project would not have been possible without the work of the community. Special thanks go to:
 
-[JBecker32/G32-Display-320x172-BT](https://github.com/JBecker32/G32-Display-320x172-BT) (the original software project)
+[JBecker32/G32-Display-480x320-BT](https://github.com/JBecker32/G32-Display-480x320-BT) (the original software project)
 
 [fschwarz86/g32](https://github.com/fschwarz86/g32)
 
