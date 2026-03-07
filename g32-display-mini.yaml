@@ -457,9 +457,9 @@ rtttl:
   gain: 80%
 
 interval:
-  # - interval: 10s
-  #   then:
-  #     - lvgl.widget.refresh: warning_on_label
+  - interval: 10s
+    then:
+      - lvgl.widget.refresh: warning_on_label
   - interval: ${Beeper_interval}
     then:
       - lambda: |-
@@ -1036,6 +1036,28 @@ lvgl:
                   }
                   return lv_color_hex(id(color_00));
                 text: "\uF1EB" # WIFI symbol
+            - label:
+                id: warning_on_label
+                x: 4
+                y: 61
+                text_font: MONTSERRAT_10
+                text_color: !lambda |-
+                  if (millis() - id(boot_start_time) < 15000) {
+                    // first 15 seconds after boot: no warning
+                    return lv_color_hex(id(color_00));
+                  }
+                  if((id(meater_alarms_tip) > 0)
+                    || (id(meater_alarms_ambient) > 0)
+                    || (id(battery_soc_value) <= id(settings_min_soc_value_persistent))
+                    || id(warning_on)
+                    || (id(g32_connected) && (id(gas_percent) <= id(settings_min_gas_value_persistent)))
+                  ) {
+                    return lv_color_hex(id(color_bad));
+                  }
+                  return lv_color_hex(id(color_00));
+                text_align: LEFT
+                width: 12
+                text: "\uF071"
             - obj:
                 id: gas_level_obj
                 x: 0
@@ -3737,8 +3759,8 @@ script:
           - battery_symbol_fix
           - g32bt_connect_label
           - wifi_connect_label
-      #     - warning_on_label
-      # - delay: 1ms
+          - warning_on_label
+      - delay: 1ms
 
       # Chunk 2: Gas widgets
       - lvgl.widget.refresh:
