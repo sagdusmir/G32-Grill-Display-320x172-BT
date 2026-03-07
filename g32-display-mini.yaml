@@ -14,6 +14,11 @@ substitutions:
   device_description: "Monitor an OW G32 grill (mini)"
   version: "BTmini 0.1.0"
 
+  wifi_ssid: !secret wifi_ssid
+  # wifi_ssid: "INSERT_YOUR_WIFI_SSID"
+  wifi_password: !secret wifi_password
+  # wifi_password: "INSERT_YOUR_WIFI_PASSWORD"
+
   # Enter data of the newly created Home Assistant ESPHome device. Example:
   api_encryption_key: "F1fyywUUE1DWzu0OzhDkyc4yAnfGwyEfsVNvhytrU6l="
 
@@ -81,9 +86,6 @@ substitutions:
   g32_characteristic_uuid_tx: 'dc0f41e2-b6ae-46a8-a19e-1a3bf4342bcb'
   # g32_characteristic_uuid_rx: 'dc0f41e1-b6ae-46a8-a19e-1a3bf4342bcb'  # from the original OW app
 
-  wifi_ssid: !secret wifi_ssid
-  wifi_password: !secret wifi_password
-
   meater_mac_address: B8:1F:5E:00:00:00
   meater_service_uuid: 'a75cc7fc-c956-488f-ac2a-2dbc08b63a04'
   meater_characteristic_uuid_temp: '7edda774-045e-4bbf-909b-45d1991a2876'
@@ -114,6 +116,8 @@ esphome:
     then:
       - lambda: id(boot_start_time) = millis();
       - light.turn_on: backlight
+      - script.execute: ble_g32_scan_start  # automatically start g32 mac scan
+      - script.execute: ble_meater_scan_start  # automatically start meater mac scan
 
 esp32:
   board: esp32-c6-devkitc-1
@@ -178,6 +182,182 @@ wifi:
           id: apply_wifi_started_by_user
           value: 'false'
       - lvgl.widget.refresh: wifi_connect_label
+
+esp32_ble:
+  # 1xG32, 4xMeater probes -> maximum 5 connections needed
+  max_connections: 5  # new option since 2025.10.15, used to be under the esp32_ble_tracker component
+
+esp32_ble_tracker:
+  on_ble_advertise:
+    then:
+      - lambda: |-
+          if (x.get_name().rfind("OWG-G32C", 0) == 0 && id(ble_g32_scan_started_by_user)) {
+            id(settings_g32_mac_address_persistent) = x.address_str();
+            id(my_rtttl).play("${New_MAC_Sound}");
+            ESP_LOGI("ble_adv", "G32 MAC address: %s", x.address_str().c_str());
+            id(ble_g32_scan_stop).execute();
+            id(apply_mac_address).execute();
+          }
+
+          if ((x.get_name() == "MEATER" || x.get_name() == "MEATER+") && id(ble_meater_scan_started_by_user)) {
+            if (id(ble_meaters_found) < 15) {
+              if (!x.get_manufacturer_datas().empty() && !x.get_manufacturer_datas()[0].data.empty()) {  // assert data is available
+                int probe_id = x.get_manufacturer_datas()[0].data[0];  // first data byte
+
+                // for solo meaters without probe ID (issue reported by @JBecker32)
+                if (probe_id == 0) {
+                  probe_id = 1;
+                }
+
+                if (probe_id > 0 && probe_id < 5) {
+                  int idx = probe_id-1;
+                  if ((id(ble_meaters_found) & (1 << idx)) == 0) {
+                    id(ble_meaters_found) |= (1 << idx);
+                    id(my_rtttl).play("${New_MAC_Sound}");
+                    ESP_LOGI("ble_adv", "Meater MAC address: %s", x.address_str().c_str());
+                    id(settings_meater_mac_addresses)[idx] = x.address_str();
+                    std::array<lv_obj_t *, 4> meater_labels = {id(settings_meater0_label), id(settings_meater1_label), id(settings_meater2_label), id(settings_meater3_label)};
+                    std::array<lv_obj_t *, 4> meater_updated = {id(settings_meater0_updated), id(settings_meater1_updated), id(settings_meater2_updated), id(settings_meater3_updated)};
+                    lv_obj_clear_flag(meater_updated[idx], LV_OBJ_FLAG_HIDDEN);
+                    lv_label_set_text(meater_labels[idx], x.address_str().c_str());
+                  }
+                }
+              }
+            }
+            if (id(ble_meaters_found) >= 15) {
+              id(ble_meater_scan_stop).execute();
+            }
+          } 
+
+ble_client:
+  - mac_address: ${g32_mac_address}  # must be dynamically applied later
+    id: ow_g32
+    on_connect:
+      then:
+        - rtttl.play: ${G32_Connect_Sound}
+        - globals.set:
+            id: g32_connected
+            value: 'true'
+        - lvgl.widget.refresh: g32bt_connect_label
+    on_disconnect:
+      then:
+        - rtttl.play: ${G32_Disconnect_Sound}
+        - globals.set:
+            id: g32_connected
+            value: 'false'
+        - lvgl.widget.refresh: g32bt_connect_label
+        - globals.set:
+            id: gas_weight
+            value: '-1'
+        - globals.set:
+            id: gas_percent
+            value: '0'
+        - lvgl.widget.refresh: [gas_percent_bar]
+        - globals.set:
+            id: zone1_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: zone2_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: zone3_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: zone4_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: sensor1_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: sensor2_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: sensor3_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: sensor4_value
+            value: ${Invalid_Sensor_Value}
+        - globals.set:
+            id: active_sensors
+            value: "0"
+        - script.execute: refresh_all_temps
+
+  - mac_address: ${meater_mac_address}
+    id: meater0
+    on_connect:
+      then:
+        - lambda: |-
+            id(active_meaters) |= 0x01;
+            id(meater_alarms_tip) |= 0x01;
+            id(meater_alarms_ambient) |= 0x01;
+        - rtttl.play: ${MT_Connect_Sound}
+    on_disconnect:
+      then:
+        - lambda: |-
+            id(active_meaters) &= ~0x01;
+            id(meater_alarms_tip) &= ~0x01;
+            id(meater_alarms_ambient) &= ~0x01;
+        - lambda: |-
+            id(g32_probe1).publish_state(${Invalid_Sensor_Value});
+        - rtttl.play: ${MT_Disconnect_Sound}
+        - script.execute: refresh_all_meater_alerts
+  - mac_address: ${meater_mac_address}
+    id: meater1
+    on_connect:
+      then:
+        - lambda: |-
+            id(active_meaters) |= 0x02;
+            id(meater_alarms_tip) |= 0x02;
+            id(meater_alarms_ambient) |= 0x02;
+        - rtttl.play: ${MT_Connect_Sound}
+    on_disconnect:
+      then:
+        - lambda: |-
+            id(active_meaters) &= ~0x02;
+            id(meater_alarms_tip) &= ~0x02;
+            id(meater_alarms_ambient) &= ~0x02;
+        - lambda: |-
+            id(g32_probe2).publish_state(${Invalid_Sensor_Value});
+        - rtttl.play: ${MT_Disconnect_Sound}
+        - script.execute: refresh_all_meater_alerts
+  - mac_address: ${meater_mac_address}
+    id: meater2
+    on_connect:
+      then:
+        - lambda: |-
+            id(active_meaters) |= 0x04;
+            id(meater_alarms_tip) |= 0x04;
+            id(meater_alarms_ambient) |= 0x04;
+        - rtttl.play: ${MT_Connect_Sound}
+    on_disconnect:
+      then:
+        - lambda: |-
+            id(active_meaters) &= ~0x04;
+            id(meater_alarms_tip) &= ~0x04;
+            id(meater_alarms_ambient) &= ~0x04;
+        - lambda: |-
+            id(g32_probe3).publish_state(${Invalid_Sensor_Value});
+        - rtttl.play: ${MT_Disconnect_Sound}
+        - script.execute: refresh_all_meater_alerts
+  - mac_address: ${meater_mac_address}
+    id: meater3
+    on_connect:
+      then:
+        - lambda: |-
+            id(active_meaters) |= 0x08;
+            id(meater_alarms_tip) |= 0x08;
+            id(meater_alarms_ambient) |= 0x08;
+        - rtttl.play: ${MT_Connect_Sound}
+    on_disconnect:
+      then:
+        - lambda: |-
+            id(active_meaters) &= ~0x08;
+            id(meater_alarms_tip) &= ~0x08;
+            id(meater_alarms_ambient) &= ~0x08;
+        - lambda: |-
+            id(g32_probe4).publish_state(${Invalid_Sensor_Value});
+        - rtttl.play: ${MT_Disconnect_Sound}
+        - script.execute: refresh_all_meater_alerts
 
 # External Components
 external_components:
@@ -325,12 +505,27 @@ globals:
   - id: g32_connected
     type: bool
     initial_value: 'false'
+  - id: firebox_open
+    type: bool
+    initial_value: 'false'
+  - id: light_on
+    type: bool
+    initial_value: 'false'
+  - id: warning_on
+    type: bool
+    initial_value: 'false'
   - id: gas_weight
     type: int32_t
     initial_value: '-1'
   - id: gas_percent
     type: int32_t
     initial_value: '0'
+  - id: ble_g32_scan_started_by_user  # for managing "scan" button status
+    type: bool
+    initial_value: 'false'
+  - id: ble_meater_scan_started_by_user  # for managing "scan" button status
+    type: bool
+    initial_value: 'false'
   - id: ble_meaters_found  # bits set/reset for every active/inactive Meater probe
     type: int
     initial_value: '0'
@@ -474,6 +669,12 @@ globals:
     type: int
     initial_value: '0'
 
+  - id: settings_g32_mac_address_persistent
+    type: std::string
+    initial_value: '"${g32_mac_address}"' 
+  - id: settings_meater_mac_addresses_persistent
+    type: std::string
+    initial_value: '"${meater_mac_address},${meater_mac_address},${meater_mac_address},${meater_mac_address}"'
   - id: settings_min_gas_value_persistent
     type: int
     initial_value: '${SETTINGS_MIN_GAS_VALUE}'
@@ -519,6 +720,7 @@ font:
     glyphs:
       - "\U000F05A9" # mdi-wifi
       - "\U000F00AF" # mdi-bluetooth
+      - "\U000F1358" # mdi-propane-tank-outline      
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     id: ICON_FONT_9
@@ -815,7 +1017,7 @@ lvgl:
             - label: # symbol for successfull BT connection
                 id: g32bt_connect_label
                 x: 0
-                y: 31
+                y: 29
                 text_font: ICON_FONT_18
                 text_align: LEFT
                 width: 16
@@ -828,7 +1030,7 @@ lvgl:
             - label: # symbol for successfull WIFI connection
                 id: wifi_connect_label
                 x: 3
-                y: 51
+                y: 47
                 text_font: MONTSERRAT_10
                 text_align: LEFT
                 width: 13
@@ -838,6 +1040,145 @@ lvgl:
                   }
                   return lv_color_hex(id(color_00));
                 text: "\uF1EB" # WIFI symbol
+            - obj:
+                id: gas_level_obj
+                x: 0
+                y: 81
+                width: 16
+                height: 91
+                pad_all: 0
+                bg_color: 0
+                border_width: 0
+                radius: 0
+                hidden: !lambda |-
+                  return id(settings_hide_gas_level_persistent);
+                widgets:
+                  - bar:
+                      id: gas_percent_bar
+                      x: 5
+                      y: 0
+                      height: 80
+                      width: 8
+                      radius: 0
+                      min_value: 1
+                      max_value: 100
+                      bg_opa: COVER
+                      bg_color: !lambda return lv_color_hex(id(color_25));
+                      indicator:
+                        radius: 0
+                        bg_color: !lambda return lv_color_hex(id(color_100)); // placeholder
+                      value: !lambda |-
+                        int y = id(gas_weight);
+                        if( y < 0) {
+                          return 0;
+                        }
+                        int z = id(gas_percent);
+                        if( z <= id(settings_min_gas_value_persistent) ) {
+                          lv_obj_set_style_bg_color(id(gas_percent_bar), lv_color_hex(id(color_bad)), LV_PART_INDICATOR);
+                        } else {                          
+                          lv_obj_set_style_bg_color(id(gas_percent_bar), lv_color_hex(id(color_good)), LV_PART_INDICATOR);
+                        }
+                        return z;
+                  - label:  # 1/10
+                      x: 4
+                      y: 0
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 2/10
+                      x: 4
+                      y: 8
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 3/10
+                      x: 4
+                      y: 16
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 4/10
+                      x: 4
+                      y: 24
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 5/10
+                      x: 4
+                      y: 32
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 6/10
+                      x: 4
+                      y: 40
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 7/10
+                      x: 4
+                      y: 48
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 8/10
+                      x: 4
+                      y: 56
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 9/10
+                      x: 4
+                      y: 64
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
+                  - label:  # 10/10
+                      x: 4
+                      y: 72
+                      width: 10
+                      height: 9
+                      bg_opa: TRANSP                      
+                      border_width: 1
+                      radius: 0
+                      border_color: 0
+                      text: " "
 
   pages:
     - id: arcs_page
@@ -1880,7 +2221,7 @@ lvgl:
                         id: sensor2_label
                         x: 0
                         y: 15
-                        width: 72
+                        width: 62
                         bg_opa: TRANSP
                         text_align: RIGHT
                         text_font: SEGMENT_FONT_20
@@ -2102,7 +2443,7 @@ lvgl:
                         id: sensor3_label
                         x: 0
                         y: 15
-                        width: 72
+                        width: 62
                         bg_opa: TRANSP
                         text_align: RIGHT
                         text_font: SEGMENT_FONT_20
@@ -2324,7 +2665,7 @@ lvgl:
                         id: sensor4_label
                         x: 0
                         y: 15
-                        width: 72
+                        width: 62
                         bg_opa: TRANSP
                         text_align: RIGHT
                         text_font: SEGMENT_FONT_20
@@ -2669,7 +3010,242 @@ sensor:
       - lambda: id(battery_soc_value) = x;
       - lvgl.widget.refresh: [battery_symbol, battery_symbol_fix]
 
+  - platform: ble_rssi
+    mac_address: ${g32_mac_address}
+    name: "BT Signalstärke"
+  - platform: wifi_signal
+    name: "WiFi Signal ESP G32"
+    update_interval: 10s
+  - platform: internal_temperature
+    name: "CPU Temperatur ESP G32"
+    update_interval: 10s
+
+  - platform: ble_client
+    ble_client_id: ow_g32
+    type: characteristic
+    name: "G32 Datablock Read"
+    service_uuid: ${g32_service_uuid}
+    characteristic_uuid: ${g32_characteristic_uuid_tx}
+    update_interval: 10s
+    lambda: |-
+      if (x.size() < 32) {
+        ESP_LOGW("ble", "Received invalid BLE data (size: %d), skipping.", x.size());
+        return {};
+      }
+      float t = (x[6]*10.0+x[7]/10.0);
+      id(g32_zone1).publish_state(t);
+      t = (x[8]*10.0+x[9]/10.0);
+      id(g32_zone2).publish_state(t);
+      t = (x[10]*10.0+x[11]/10.0);
+      id(g32_zone3).publish_state(t);
+      t = (x[12]*10.0+x[13]/10.0);
+      id(g32_zone4).publish_state(t);
+
+      if ((id(active_meaters) & (1 << 0)) == 0) {
+        t = (x[14]*10.0+x[15]/10.0);
+        id(g32_probe1).publish_state(t);
+      }                  
+      if ((id(active_meaters) & (1 << 1)) == 0) {
+        t = (x[16]*10.0+x[17]/10.0);
+        id(g32_probe2).publish_state(t);
+      }                  
+      if ((id(active_meaters) & (1 << 2)) == 0) {
+        t = (x[18]*10.0+x[19]/10.0);
+        id(g32_probe3).publish_state(t);
+      }                  
+      if ((id(active_meaters) & (1 << 3)) == 0) {
+        t = (x[20]*10.0+x[21]/10.0);
+        id(g32_probe4).publish_state(t);
+      }                  
+      t = (x[22]*256+x[23]);
+      id(g32_gas_weight).publish_state(t);
+      t = (x[24]);
+      id(g32_firebox_open).publish_state(t);
+      if (id(g32_firebox_open)){  // no light if firebox is closed
+        t = (x[25]);
+      } else {
+        t = 0;
+      }
+      id(g32_light_on).publish_state(t);
+      t = (x[31]);
+      id(g32_gas_percent).publish_state(t);
+      return (x[30]);
+
+  - platform: template
+    name: "G32 Zone 1"
+    id: g32_zone1
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(zone1_value) = x;
+      - lvgl.widget.refresh: [zone1_label, zone1_label_large, zone1_arc]
+
+  - platform: template
+    name: "G32 Zone 2"
+    id: g32_zone2
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(zone2_value) = x;
+      - lvgl.widget.refresh: [zone2_label, zone2_label_large, zone2_arc]
+
+  - platform: template
+    name: "G32 Zone 3"
+    id: g32_zone3
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(zone3_value) = x;
+      - lvgl.widget.refresh: [zone3_label, zone3_label_large, zone3_arc]
+
+  - platform: template
+    name: "G32 Zone 4"
+    id: g32_zone4
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(zone4_value) = x;
+      - lvgl.widget.refresh: [zone4_label, zone4_label_large, zone4_arc]
+
+  - platform: template
+    name: "G32 Sensor 1"
+    id: g32_probe1
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(sensor1_value) = x;
+      - lvgl.widget.refresh: [sensor1_label, sensor1_label_large, sensor1_arc, sensor1_obj]
+      - lvgl.widget.refresh: [sensor1_battery]
+
+  - platform: template
+    name: "G32 Sensor 2"
+    id: g32_probe2
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(sensor2_value) = x;
+      - lvgl.widget.refresh: [sensor2_label, sensor2_label_large, sensor2_arc, sensor2_obj]
+      - lvgl.widget.refresh: [sensor2_battery]
+
+  - platform: template
+    name: "G32 Sensor 3"
+    id: g32_probe3
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(sensor3_value) = x;
+      - lvgl.widget.refresh: [sensor3_label, sensor3_label_large, sensor3_arc, sensor3_obj]
+      - lvgl.widget.refresh: [sensor3_battery]
+
+  - platform: template
+    name: "G32 Sensor 4"
+    id: g32_probe4
+    device_class: "temperature"
+    unit_of_measurement: "°C"
+    accuracy_decimals: 0
+    on_value:
+      - lambda: id(sensor4_value) = x;
+      - lvgl.widget.refresh: [sensor4_label, sensor4_label_large, sensor4_arc, sensor4_obj]
+      - lvgl.widget.refresh: [sensor4_battery]
+
+  - platform: template
+    name: "G32 Gasbuddy level in g"
+    id: g32_gas_weight
+    device_class: weight
+    state_class: measurement
+    unit_of_measurement: g
+    accuracy_decimals: 0
+    icon: "mdi:weight-gram"
+    on_value:
+      - globals.set:
+          id: gas_weight
+          value: !lambda |-
+            if (x >= 11000) {
+              return 11000;
+            }
+            return int(x);
+
+  - platform: template
+    name: "G32 Gasbuddy level in %"
+    id: g32_gas_percent
+    state_class: measurement
+    unit_of_measurement: "%"
+    icon: "mdi:gas-cylinder"
+    on_value:
+      - globals.set:
+          id: gas_percent
+          value: !lambda |-
+            if(x > 100) {
+              return 100;
+            }
+            return int(x);
+      - lvgl.widget.refresh: [gas_percent_bar]
+
+binary_sensor:
+  - platform: status
+    name: "Status ESP G32"
+
+  - platform: template
+    name: "G32 Licht"
+    id: g32_light_on
+    icon: "mdi:light-flood-down"
+    on_state:
+      - globals.set:
+          id: light_on
+          value: !lambda return(x);
+
+  - platform: template
+    name: "G32 Haube"
+    id: g32_firebox_open
+    device_class: "door"
+    icon: "mdi:door"
+    on_state:
+      - globals.set:
+          id: firebox_open
+          value: !lambda return(x);
+
 script:
+  # Consolidated refresh scripts for performance optimization
+  - id: refresh_all_temps
+    then:
+      - lvgl.widget.refresh:
+          - zone1_label
+          - zone1_label_large
+          - zone1_arc
+          - zone2_label
+          - zone2_label_large
+          - zone2_arc
+          - zone3_label
+          - zone3_label_large
+          - zone3_arc
+          - zone4_label
+          - zone4_label_large
+          - zone4_arc
+          - sensor1_label
+          - sensor1_label_large
+          - sensor1_arc
+          - sensor1_obj
+          - sensor2_label
+          - sensor2_label_large
+          - sensor2_arc
+          - sensor2_obj
+          - sensor3_label
+          - sensor3_label_large
+          - sensor3_arc
+          - sensor3_obj
+          - sensor4_label
+          - sensor4_label_large
+          - sensor4_arc
+          - sensor4_obj
+      - lvgl.widget.redraw:
+
   - id: refresh_all_limits
     then:
       - lvgl.widget.refresh:
@@ -2765,13 +3341,12 @@ script:
                 id(active_meaters) = 0;
                 id(meater_alarms_tip) = 0;
                 id(meater_alarms_ambient) = 0;
-            # - script.execute: apply_mac_address
             # - script.execute: apply_wifi
             # - script.execute: apply_meater_mac_addresses
             - lambda: |-
                 id(apply_color_scheme).execute();
             - lvgl.widget.hide: boot_screen
-            - lvgl.widget.show: [status_bar_right] # , status_bar_bottom]
+            - lvgl.widget.show: [status_bar_right]
 
             # some things to refresh from persisted settings
             - lvgl.widget.refresh: battery_symbol_obj
@@ -2793,6 +3368,68 @@ script:
             - globals.set:
                 id: boot_screen_hidden
                 value: 'true'
+
+  - id: ble_g32_scan_start
+    then:
+      - globals.set:
+          id: ble_g32_scan_started_by_user
+          value: 'true'
+
+  - id: ble_g32_scan_stop
+    then:
+      - globals.set:
+          id: ble_g32_scan_started_by_user
+          value: 'false'
+
+  - id: ble_meater_scan_start
+    then:
+      - globals.set:
+          id: ble_meater_scan_started_by_user
+          value: 'true'
+      - globals.set:
+          id: ble_meaters_found
+          value: '0'
+
+  - id: ble_meater_scan_stop
+    then:
+      - globals.set:
+          id: ble_meater_scan_started_by_user
+          value: 'false'
+
+  - id: apply_mac_address
+    then:
+        # this ensures the ble_client changes MAC at runtime
+        - lambda: !lambda |-
+            xTaskCreatePinnedToCore([](void *) {
+              uint64_t addr = 0;
+              uint64_t b1, b2, b3, b4, b5, b6;
+              if (sscanf(id(settings_g32_mac_address_persistent).c_str(), "%llx:%llx:%llx:%llx:%llx:%llx", &b1, &b2, &b3, &b4, &b5, &b6) == 6) {
+                addr = (b1 << 40) | (b2 << 32) | (b3 << 24) | (b4 << 16) | (b5 << 8) | b6;
+              }
+              id(ow_g32).set_address(addr);
+              ESP_LOGI("settings", "set G32 MAC address to %s", id(settings_g32_mac_address_persistent).c_str());
+              vTaskDelete(NULL);
+            }, "apply_mac_task", 4096, NULL, 1, NULL, 0);
+
+  - id: apply_meater_mac_addresses
+    then:
+        # this ensures the ble_client changes MAC at runtime
+        - lambda: !lambda |-
+            xTaskCreatePinnedToCore([](void *) {
+              std::array<esphome::ble_client::BLEClient *, 4> meaters = {id(meater0), id(meater1), id(meater2), id(meater3)};
+              std::string t_meater_mac_addresses = id(settings_meater_mac_addresses_persistent);
+              for (int i = 0; i < 4; i++) {
+                std::string mac = t_meater_mac_addresses.substr(i * 18, 17);
+                uint64_t addr = 0;
+                uint64_t b1, b2, b3, b4, b5, b6;
+                if (sscanf(mac.c_str(), "%llx:%llx:%llx:%llx:%llx:%llx", &b1, &b2, &b3, &b4, &b5, &b6) == 6) {
+                  addr = (b1 << 40) | (b2 << 32) | (b3 << 24) | (b4 << 16) | (b5 << 8) | b6;
+                }
+                meaters[i]->set_address(addr);
+                ESP_LOGI("settings", "set meater%d MAC address to %s", i, mac.c_str());
+              }
+              vTaskDelete(NULL);
+            }, "apply_meater_task", 4096, NULL, 1, NULL, 0);
 
   - id: apply_color_scheme
     mode: restart
@@ -2864,21 +3501,12 @@ script:
       #     - warning_on_label
       # - delay: 1ms
 
-      # # Chunk 2: Gas widgets
-      # - lvgl.widget.refresh:
-      #     - gas_level_obj
-      #     - gas_icon
-      #     - gas_percent_bar
-      #     - gas_percent_label_shadow
-      #     - gas_percent_label
-      #     - gas_percent_label_unit
-      #     - gas_weight_label_shadow
-      #     - gas_weight_label
-      #     - gas_weight_symbol
-      #     - settings_status_bar_top_bar
-      #     - settings_status_bar_top_title
-      #     - settings_status_bar_top_version
-      # - delay: 1ms
+      # Chunk 2: Gas widgets
+      - lvgl.widget.refresh:
+          - gas_level_obj
+          - gas_icon
+          - gas_percent_bar
+      - delay: 1ms
 
       # Chunk 3: Zone 1 & 2 widgets
       - lvgl.widget.refresh:
@@ -3030,23 +3658,6 @@ script:
       #     - settings_hide_inactive_sensors_switch_label
       #     - settings_hide_inactive_sensors_switch
       # - delay: 1ms
-
-      # # Chunk 11: Settings Meater and buttons
-      # - lvgl.widget.refresh:
-      #     - settings_meater_title
-      #     - settings_meater_hint
-      #     - settings_meater0_label
-      #     - settings_meater0_updated
-      #     - settings_meater1_label
-      #     - settings_meater1_updated
-      #     - settings_meater2_label
-      #     - settings_meater2_updated
-      #     - settings_meater3_label
-      #     - settings_meater3_updated
-      #     - settings_meater_mac_addresses_search_button
-      #     - settings_meater_mac_addresses_search_button_label
-      #     - settings_meater_mac_addresses_abort_button
-      #     - settings_meater_mac_addresses_abort_button_label
 
       - lambda: |-
           // Update nested parts
