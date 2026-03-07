@@ -712,6 +712,15 @@ globals:
     initial_value: '${SETTINGS_COLOR_SCHEME_IDX}'
     restore_value: true
 
+  - id: current_ip_address
+    type: std::string
+    initial_value: '" "'  # not connected
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      id: wifi_ip_sensor
+
 select:
   - platform: template
     id: color_scheme_select
@@ -737,14 +746,19 @@ select:
             }
           }
 
-  - id: current_ip_address
-    type: std::string
-    initial_value: '" "'  # not connected
+switch:
+  - platform: template
+    name: "Hide Battery SOC"
+    id: hide_soc_switch
+    optimistic: true
+    on_turn_on:
+      - lambda: id(settings_hide_soc_persistent) = true;
+      - lvgl.widget.refresh: battery_symbol_obj
+    on_turn_off:
+      - lambda: id(settings_hide_soc_persistent) = false;
+      - lvgl.widget.refresh: battery_symbol_obj
 
-text_sensor:
-  - platform: wifi_info
-    ip_address:
-      id: wifi_ip_sensor
+>>>>>>> c1f3a38 (expose settings_hide_soc via HA)
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
@@ -3813,6 +3827,9 @@ script:
             - lvgl.widget.refresh: [sensor1_limit_label, sensor2_limit_label, sensor3_limit_label, sensor4_limit_label]
             - lvgl.widget.refresh: [sensor1_limit_label_bell, sensor2_limit_label_bell, sensor3_limit_label_bell, sensor4_limit_label_bell]
             - lvgl.widget.refresh: [sensor1_battery, sensor2_battery, sensor3_battery, sensor4_battery]
+            - switch.publish_state:
+                id: hide_soc_switch
+                state: !lambda return id(settings_hide_soc_persistent);
             - globals.set:
                 id: boot_screen_hidden
                 value: 'true'
