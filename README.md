@@ -73,7 +73,7 @@ See [changelog.md](changelog.md).
   You need a "__Waveshare ESP32-C6-Touch-LCD-1.47__". It is equipped with an ESP32-C6, WiFi, Bluetooth, a 320x172 Pixel 1.47" touchscreen, and everything you need. No additional memory card required.
 
 * __Buzzer__<br>
-  UNTESTED:  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6
+  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6
 
 
 ## Uploading the software to the ESP
