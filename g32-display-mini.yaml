@@ -710,6 +710,32 @@ globals:
   - id: settings_color_scheme_idx_persistent
     type: int
     initial_value: '${SETTINGS_COLOR_SCHEME_IDX}'
+    restore_value: true
+
+select:
+  - platform: template
+    id: color_scheme_select
+    name: "Color Scheme"
+    optimistic: true
+    options:
+      - "white"
+      - "amber"
+      - "cyan"
+      - "night red"
+      - "green"
+      - "night blue"
+      - "purple"
+      - "yellow"
+      - "white (clean)"
+    on_value:
+      - lambda: |-
+          for (const auto& pair : id(color_schemes)) {
+            if (pair.first == x) {
+              id(settings_color_scheme_idx_persistent) = static_cast<int>(pair.second[0]);
+              id(apply_color_scheme).execute();
+              break;
+            }
+          }
 
   - id: current_ip_address
     type: std::string
@@ -3759,6 +3785,16 @@ script:
                 id(apply_color_scheme).execute();
             - lvgl.widget.hide: boot_screen
             - lvgl.widget.show: [status_bar_right]
+            - lambda: |-
+                int idx = id(settings_color_scheme_idx_persistent);
+                std::string name = "white";
+                for (const auto& pair : id(color_schemes)) {
+                  if (static_cast<int>(pair.second[0]) == idx) {
+                    name = pair.first;
+                    break;
+                  }
+                }
+                id(color_scheme_select).publish_state(name);
 
             # some things to refresh from persisted settings
             - lvgl.widget.refresh: battery_symbol_obj
