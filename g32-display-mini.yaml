@@ -692,9 +692,11 @@ globals:
   - id: settings_hide_soc_persistent
     type: bool
     initial_value: '${SETTINGS_HIDE_SOC}'
+    restore_value: true
   - id: settings_hide_gas_level_persistent
     type: bool
     initial_value: '${SETTINGS_HIDE_GAS_LEVEL}'
+    restore_value: true
   - id: settings_enable_temperature_limits_persistent
     type: bool
     initial_value: 'true'
@@ -758,7 +760,17 @@ switch:
       - lambda: id(settings_hide_soc_persistent) = false;
       - lvgl.widget.refresh: battery_symbol_obj
 
->>>>>>> c1f3a38 (expose settings_hide_soc via HA)
+  - platform: template
+    name: "Hide Gas Level"
+    id: hide_gas_level_switch
+    optimistic: true
+    on_turn_on:
+      - lambda: id(settings_hide_gas_level_persistent) = true;
+      - lvgl.widget.refresh: gas_level_obj
+    on_turn_off:
+      - lambda: id(settings_hide_gas_level_persistent) = false;
+      - lvgl.widget.refresh: gas_level_obj
+
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
@@ -3830,6 +3842,20 @@ script:
             - switch.publish_state:
                 id: hide_soc_switch
                 state: !lambda return id(settings_hide_soc_persistent);
+            - if:
+                condition:
+                  lambda: return id(settings_hide_soc_persistent);
+                then:
+                  - switch.turn_on: hide_soc_switch
+                else:
+                  - switch.turn_off: hide_soc_switch
+            - if:
+                condition:
+                  lambda: return id(settings_hide_gas_level_persistent);
+                then:
+                  - switch.turn_on: hide_gas_level_switch
+                else:
+                  - switch.turn_off: hide_gas_level_switch
             - globals.set:
                 id: boot_screen_hidden
                 value: 'true'
