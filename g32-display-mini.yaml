@@ -686,6 +686,7 @@ globals:
   - id: settings_min_gas_value_persistent
     type: int
     initial_value: '${SETTINGS_MIN_GAS_VALUE}'
+    restore_value: true
   - id: settings_min_soc_value_persistent
     type: int
     initial_value: '${SETTINGS_MIN_SOC_VALUE}'
@@ -770,6 +771,20 @@ switch:
     on_turn_off:
       - lambda: id(settings_hide_gas_level_persistent) = false;
       - lvgl.widget.refresh: gas_level_obj
+
+number:
+  - platform: template
+    name: "Min Gas Value"
+    id: min_gas_value_number
+    optimistic: true
+    min_value: 5
+    max_value: 60
+    step: 5
+    unit_of_measurement: "%"
+    initial_value: 20.0
+    on_value:
+      - lambda: id(settings_min_gas_value_persistent) = int(x);
+      - lvgl.widget.refresh: [warning_on_label, gas_percent_bar]
 
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
