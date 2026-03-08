@@ -690,6 +690,7 @@ globals:
   - id: settings_min_soc_value_persistent
     type: int
     initial_value: '${SETTINGS_MIN_SOC_VALUE}'
+    restore_value: true
   - id: settings_hide_soc_persistent
     type: bool
     initial_value: '${SETTINGS_HIDE_SOC}'
@@ -785,6 +786,19 @@ number:
     on_value:
       - lambda: id(settings_min_gas_value_persistent) = int(x);
       - lvgl.widget.refresh: [warning_on_label, gas_percent_bar]
+
+  - platform: template
+    name: "Min Battery SOC Value"
+    id: min_soc_value_number
+    optimistic: true
+    min_value: 5
+    max_value: 50
+    step: 10
+    unit_of_measurement: "%"
+    initial_value: 40.0
+    on_value:
+      - lambda: id(settings_min_soc_value_persistent) = int(x);
+      - lvgl.widget.refresh: [warning_on_label, battery_symbol]
 
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
