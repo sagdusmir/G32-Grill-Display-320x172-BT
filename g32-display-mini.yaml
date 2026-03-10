@@ -702,6 +702,7 @@ globals:
   - id: settings_enable_temperature_limits_persistent
     type: bool
     initial_value: 'true'
+    restore_value: true
   - id: settings_enable_auto_hiding_temperature_limits_persistent
     type: bool
     initial_value: 'true'
@@ -711,6 +712,7 @@ globals:
   - id: settings_display_timeout_value_persistent
     type: int
     initial_value: '30'
+    restore_value: true
   - id: settings_color_scheme_idx_persistent
     type: int
     initial_value: '${SETTINGS_COLOR_SCHEME_IDX}'
@@ -3218,6 +3220,18 @@ lvgl:
 
 
 sensor:
+  - platform: template
+    name: "C6 Test Sensor"
+    lambda: 'return 42;'
+    update_interval: 10s
+
+  - platform: template
+    name: "Test Uptime Seconds"   # ← must have name!
+    id: test_uptime
+    unit_of_measurement: "s"
+    lambda: 'return millis()/1000.0;'
+    update_interval: 10s
+
   - platform: adc
     pin: GPIO0
     name: "Battery SOC"
