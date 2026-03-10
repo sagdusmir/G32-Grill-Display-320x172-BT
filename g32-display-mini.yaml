@@ -16,7 +16,7 @@ substitutions:
   # wifi_password: "INSERT_YOUR_WIFI_PASSWORD"
 
   # Enter data of the newly created Home Assistant ESPHome device. Example:
-  api_encryption_key: "F1fyywUUE1DWzu0OzhDkyc4yAnfGwyEfsVNvhytrU6l="
+  api_encryption_key: "YcM9Kcc+DRDHfISFcF8FlDN0WuanM1LJV3duK/PugZA="
 
   # over-the-air updates (ESPHome CLI or Home Assistant add-On)
   # Hint: if you changed this value on the device, you might have to alter
@@ -147,6 +147,7 @@ logger:
   # baud_rate: 0  # no logging -> saves power
 
 api: # enable Home Assistant API
+  max_connections: 3   # TODO testing
   encryption:
     key: ${api_encryption_key}
   reboot_timeout: 0s  
