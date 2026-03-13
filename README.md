@@ -62,7 +62,7 @@ See [changelog.md](changelog.md).
 
 | Component                            | Qty | Source                                   | Costs        |
 |--------------------------------------|-----|------------------------------------------|--------------|
-| ESP32 Dev Board                      | 1   | Amazon, AliExpress                       |   ~17€ - 27€ |
+| ESP32 Dev Board                      | 1   | Amazon, AliExpress                       |   ~15€ - 20€ |
 | Buzzer (optional)                    | 1   | AliExpress, Amazon, eBay                 |       ~2€    |
 | Connection Cable                     | 1   | your existing collection of cables       |       ~0€    |
 
