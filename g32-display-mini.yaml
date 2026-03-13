@@ -6,7 +6,7 @@ substitutions:
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-bt-mini
   device_description: "Monitor an OW G32 grill (mini)"
-  version: "BTmini 0.1.0"
+  version: "BTmini 0.2.0"
 
   # either pull values from secrets.yaml
   # or have it directly in this file
@@ -28,7 +28,7 @@ substitutions:
   COLOR_SCHEMES: |
     //                  idx 100%      75%       50%       25%       <=25%    GOOD      BAD       LIGHT
     {
-      {"white",         {0, 0xffffff, 0xbfbfbf, 0x808080, 0x404040, 0x404040, 0x8bff85, 0xff5757, 0xffff00}},
+      {"white",         {0, 0xffffff, 0xcccccc, 0x808080, 0x404040, 0x404040, 0x8bff85, 0xff5757, 0xffff00}},
       {"amber",         {1, 0xffb900, 0xbd8a00, 0x805d00, 0x392900, 0x392900, 0x58b100, 0xff5600, 0xffff00}},
       {"cyan",          {2, 0x68e2fb, 0x00acbf, 0x007582, 0x003c43, 0x003c43, 0x75fb8a, 0xea838d, 0xffff00}},
       {"night red",     {3, 0xff0059, 0xc00044, 0x80002e, 0x400018, 0x400018, 0xff0059, 0xe4d300, 0xffff00}},
@@ -166,11 +166,13 @@ wifi:
   id: my_wifi
   ssid: ${wifi_ssid}
   password: ${wifi_password}
-  fast_connect: True
+  fast_connect: False
   reboot_timeout: 0s
   on_connect:
     then:
       - rtttl.play: ${Wifi_Connect_Sound}
+      - lambda: |-
+          id(current_ip_address) = id(wifi_ip_sensor).state.c_str();
       - globals.set:
           id: wifi_connected
           value: 'true'
@@ -178,6 +180,18 @@ wifi:
           id: apply_wifi_started_by_user
           value: 'false'
       - lvgl.widget.refresh: wifi_connect_label
+      - lvgl.widget.refresh: current_wifi_ip_label
+  on_disconnect:
+    then:
+      - rtttl.play: ${Wifi_Disconnect_Sound}
+      - globals.set:
+          id: wifi_connected
+          value: 'false'
+      - globals.set:
+          id: current_ip_address
+          value: '" "'  # not connected
+      - lvgl.widget.refresh: wifi_connect_label
+      - lvgl.widget.refresh: current_wifi_ip_label
 
 esp32_ble:
   # 1xG32, 4xMeater probes -> maximum 5 connections needed
@@ -189,7 +203,7 @@ esp32_ble_tracker:
       - lambda: |-
           if (x.get_name().rfind("OWG-G32C", 0) == 0 && id(ble_g32_scan_started_by_user)) {
             id(settings_g32_mac_address_persistent) = x.address_str();
-            id(my_rtttl).play("${New_MAC_Sound}");
+            // id(my_rtttl).play("${New_MAC_Sound}");
             ESP_LOGI("ble_adv", "G32 MAC address: %s", x.address_str().c_str());
             id(ble_g32_scan_stop).execute();
             id(apply_mac_address).execute();
@@ -242,6 +256,7 @@ ble_client:
         - globals.set:
             id: gas_weight
             value: '-1'
+        - lvgl.widget.refresh: gas_weight_label
         - globals.set:
             id: gas_percent
             value: '0'
@@ -696,6 +711,14 @@ globals:
     type: int
     initial_value: '${SETTINGS_COLOR_SCHEME_IDX}'
 
+  - id: current_ip_address
+    type: std::string
+    initial_value: '" "'  # not connected
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      id: wifi_ip_sensor
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
@@ -1194,6 +1217,18 @@ lvgl:
                       radius: 0
                       border_color: 0
                       text: " "
+            - label: # catch clicks
+                x: 0
+                y: 0
+                width: 16
+                height: 172
+                bg_opa: TRANSP
+                pad_all: 0
+                border_width: 0
+                radius: 0
+                clickable: true
+                on_press:
+                  - script.execute: toggle_settings_page
 
   pages:
     - id: arcs_page
@@ -2988,6 +3023,119 @@ lvgl:
               - script.execute: refresh_all_limits
 
               - lvgl.page.show: arcs_page
+
+  # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+    - id: settings_page
+      skip: true
+      pad_all: 0
+      widgets:
+        - obj:
+            x: 0
+            y: 0
+            width: 304
+            height: 172
+            bg_color: 0
+            bg_opa: COVER
+            pad_all: 0
+            border_width: 0
+            radius: 0
+            widgets:
+              - obj:  # only for drawing the horizontal divider
+                  id: settings_bar
+                  x: 0
+                  y: 0
+                  width: 304
+                  height: 20
+                  border_color: !lambda return lv_color_hex(id(color_75));
+                  border_width: 10
+                  border_side:
+                    - TOP
+                  radius: 10
+                  pad_all: 0
+                  bg_color: 0
+              - label:
+                  id: settings_title
+                  x: 117
+                  y: -4
+                  width: 70
+                  bg_opa: COVER
+                  text_font: MONTSERRAT_BOLD_FONT_14
+                  text_align: CENTER
+                  text_color: !lambda return lv_color_hex(id(color_75));
+                  text: "DETAILS"
+              - label:
+                  id: current_wifi_ip_label1
+                  x: 0
+                  y: 15
+                  width: 160
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: "Current IP"
+              - label:
+                  id: current_wifi_ip_label
+                  x: 170
+                  y: 15
+                  width: 130
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: !lambda |-
+                    return id(current_ip_address).c_str();
+              - label:
+                  id: current_version_label1
+                  x: 0
+                  y: 34
+                  width: 160
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: "Current version"
+              - label:
+                  id: current_version_label2
+                  x: 170
+                  y: 34
+                  width: 130
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: ${version}
+              - label:
+                  id: gas_weight_label1
+                  x: 0
+                  y: 53
+                  width: 160
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: "Gas bottle weight"
+              - label:
+                  id: gas_weight_label
+                  x: 170
+                  y: 53
+                  width: 130
+                  text_font: MONTSERRAT_18
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_align: LEFT
+                  text: !lambda |-
+                    int v = id(gas_weight);
+                    if( v < 0) {
+                      return " ";
+                    }
+                    int v2 = id(gas_percent);
+                    return (to_string(v) + " g (" + to_string(v2) + "%)").c_str();
+              - label:
+                  x: 0
+                  y: 0
+                  bg_opa: TRANSP
+                  width: 304
+                  height: 172
+                  text: " "
+                  clickable: True
+                  on_press:
+                    - script.execute: toggle_settings_page
+
+
 sensor:
   - platform: adc
     pin: GPIO0
@@ -3186,6 +3334,7 @@ sensor:
               return 11000;
             }
             return int(x);
+      - lvgl.widget.refresh: gas_weight_label
 
   - platform: template
     name: "G32 Gasbuddy level in %"
@@ -3887,6 +4036,18 @@ script:
           - sensor_limits_button_okay_label
       - delay: 1ms
 
+      # Chunk: Settings page
+      - lvgl.widget.refresh:
+          - settings_bar
+          - settings_title
+          - current_wifi_ip_label1
+          - current_wifi_ip_label
+          - current_version_label1
+          - current_version_label2
+          - gas_weight_label1
+          - gas_weight_label
+      - delay: 1ms
+
       - lambda: |-
           // Update nested parts
 
@@ -3909,3 +4070,14 @@ script:
 
           lv_obj_set_style_bg_color(sensor_limit_slider, lv_color_hex(id(color_50)), LV_PART_INDICATOR);
           lv_obj_set_style_bg_color(sensor_limit_slider, lv_color_hex(id(color_100)), LV_PART_KNOB);
+
+  - id: toggle_settings_page
+    then:
+      - if:
+          condition:
+            or:
+              - lambda: 'return lv_scr_act() == id(arcs_page)->obj;'
+          then:
+            - lvgl.page.show: settings_page
+          else:
+            - lvgl.page.show: arcs_page
