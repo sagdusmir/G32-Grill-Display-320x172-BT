@@ -3055,9 +3055,9 @@ lvgl:
                   bg_color: 0
               - label:
                   id: settings_title
-                  x: 117
+                  x: 113
                   y: -4
-                  width: 70
+                  width: 78
                   bg_opa: COVER
                   text_font: MONTSERRAT_BOLD_FONT_14
                   text_align: CENTER
