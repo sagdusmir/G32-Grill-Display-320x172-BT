@@ -223,7 +223,7 @@ esp32_ble_tracker:
                   int idx = probe_id-1;
                   if ((id(ble_meaters_found) & (1 << idx)) == 0) {
                     id(ble_meaters_found) |= (1 << idx);
-                    id(my_rtttl).play("${New_MAC_Sound}");
+                    // id(my_rtttl).play("${New_MAC_Sound}");
                     ESP_LOGI("ble_adv", "Meater MAC address: %s", x.address_str().c_str());
                     id(settings_meater_mac_addresses)[idx] = x.address_str();
                     id(apply_meater_mac_addresses).execute();
