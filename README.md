@@ -24,6 +24,7 @@ Bare device during testing.<br>Wiring of buzzer, battery, charge circuit, and po
 3. [Hardware](#hardware)
    - [BOM](#bom)
    - [Component Details](#component-details)
+   - [Wiring](#wiring)
 4. [Uploading the software to the ESP](#uploading-the-software-to-the-esp)
 5. [Troubleshooting](#troubleshooting)
 6. [Acknowledgments](#acknowledgments)
@@ -60,11 +61,17 @@ See [changelog.md](changelog.md).
 ## Hardware
 ### BOM
 
-| Component                            | Qty | Source                                   | Costs        |
-|--------------------------------------|-----|------------------------------------------|--------------|
-| ESP32 Dev Board                      | 1   | Amazon, AliExpress                       |   ~15€ - 20€ |
-| Buzzer (optional)                    | 1   | AliExpress, Amazon, eBay                 |       ~2€    |
-| Connection Cable                     | 1   | your existing collection of cables       |       ~0€    |
+| Component                                    | Qty | Source                                   | Costs        |
+|----------------------------------------------|-----|------------------------------------------|--------------|
+| ESP32 Dev Board                              | 1   | Amazon, AliExpress                       |   ~15€ - 20€ |
+| Battery                                      | 1   | AliExpress                               |    ~8€ - 12€ |
+| Power Switch with Reverse Voltage Protection | 1   | somewhere online                         |    ~5€ - 10€ |
+| USB 5V 2A Boost Converter Charer circuit     | 1   | AliExpress, eBay                         |       ~1€    |
+| Diode                                        | 2   | eBay                                     |       ~1€    |
+| Tactile Switch                               | 1   | eBay, AliExpress                         |       ~1€    |
+| Buzzer (optional)                            | 1   | AliExpress, Amazon, eBay                 |       ~2€    |
+| some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
+| USB-C Connection Cable                       | 1   | your existing collection of cables       |       ~0€    |
 
 
 ### Component Details
@@ -72,8 +79,25 @@ See [changelog.md](changelog.md).
 * __ESP32 Dev Board__<br>
   You need a "__Waveshare ESP32-C6-Touch-LCD-1.47__". It is equipped with an ESP32-C6, WiFi, Bluetooth, a 320x172 Pixel 1.47" touchscreen, and everything you need. No additional memory card required.
 
+
+* __Battery__
+  A 3.7V LiPo/Li-Ion Battery (1 cell) will power the ESP32 Dev Board. Because of space constraints I am going with battery of type 702080  (7mm x 20mm x 80mm) with a capacity of 1500mAh.
+
+* __Power Switch with Reverse Voltage Protection__<br>
+  To minimize power draw, I am using a Pololu Mini Pushbutton Power Switch,Reverse Voltage Protection,LV (Pololu 2808) which should reduce power draw as much as possible.
+
+* __5V 2A Boost Converter Charer circuit__<br>
+  For chargingt the 3.7V LiPo battery, I use a 5V 2A Boost Converter Step-Up Power Module with charger, protection circuitry, 4 LEDs, and a K pad. It is based on a IP5306 and does some auto-powersaving stuff....which also causes new challenges.
+
+* __Diode__<br>
+  Two Schottky Diodes (e.g. 1N5819) to create clean power paths and prevent back-feeding.
+
 * __Buzzer__<br>
-  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6
+  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm).
+
+### Wiring
+
+__PLANNED__ and not tested:
 
 
 ## Uploading the software to the ESP
