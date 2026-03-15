@@ -1,4 +1,7 @@
 # Changelog
+* [2026-03-15] BTmini 0.2.2
+   - change IP Address wording
+   - define emty text for clickable status bar label to get rid of the fallback „Text“
 * [2026-03-13] BTmini 0.2.1
    - no duplicated sounds on BLE events
 * [2026-03-13] BTmini 0.2.0
