@@ -6,7 +6,7 @@ substitutions:
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-bt-mini
   device_description: "Monitor an OW G32 grill (mini)"
-  version: "BTmini 0.2.1"
+  version: "BTmini 0.2.2"
 
   # either pull values from secrets.yaml
   # or have it directly in this file
@@ -1227,6 +1227,7 @@ lvgl:
                 border_width: 0
                 radius: 0
                 clickable: true
+                text: " "
                 on_press:
                   - script.execute: toggle_settings_page
 
@@ -3071,7 +3072,7 @@ lvgl:
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
                   text_font: MONTSERRAT_18
-                  text: "Current IP"
+                  text: "IP Address"
               - label:
                   id: current_wifi_ip_label
                   x: 170
