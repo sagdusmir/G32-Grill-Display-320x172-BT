@@ -89,7 +89,7 @@ See [changelog.md](changelog.md).
   For chargingt the 3.7V LiPo battery, I use a 5V 2A Boost Converter Step-Up Power Module with charger, protection circuitry, 4 LEDs, and a K pad. It is based on a IP5306 and does some auto-powersaving stuff....which also causes new challenges.
 
 * __Diode__<br>
-  Two Schottky Diodes (e.g. 1N5819) to create clean power paths and prevent back-feeding.
+  Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to create clean power paths and prevent back-feeding.
 
 * __Buzzer__<br>
   A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm).
