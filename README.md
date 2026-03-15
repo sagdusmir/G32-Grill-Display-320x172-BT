@@ -68,8 +68,7 @@ See [changelog.md](changelog.md).
 | Power Switch with Reverse Voltage Protection | 1   | somewhere online                         |    ~5€ - 10€ |
 | USB 5V 2A Boost Converter Charer circuit     | 1   | AliExpress, eBay                         |       ~1€    |
 | Diode                                        | 2   | eBay                                     |       ~1€    |
-| Tactile Switch                               | 1   | eBay, AliExpress                         |       ~1€    |
-| Buzzer (optional)                            | 1   | AliExpress, Amazon, eBay                 |       ~2€    |
+| Screws	                                      | ?	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
 | some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
 | USB-C Connection Cable                       | 1   | your existing collection of cables       |       ~0€    |
 
