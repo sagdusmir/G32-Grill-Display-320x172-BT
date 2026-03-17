@@ -80,13 +80,13 @@ See [changelog.md](changelog.md).
 
 
 * __Battery__
-  A 3.7V LiPo/Li-Ion Battery (1 cell) will power the ESP32 Dev Board. Because of space constraints I am going with battery of type 702080  (7mm x 20mm x 80mm) with a capacity of 1500mAh.
+  A 3.7V LiPo/Li-Ion Battery (1 cell) will power the ESP32 Dev Board. Because of space constraints I am going with a battery of type 702080  (7mm x 20mm x 80mm) with a capacity of 1500mAh.
 
 * __Power Switch with Reverse Voltage Protection__<br>
   To minimize power draw, I am using a Pololu Mini Pushbutton Power Switch,Reverse Voltage Protection,LV (Pololu 2808) which should reduce power draw as much as possible.
 
 * __5V 2A Boost Converter Charer circuit__<br>
-  For chargingt the 3.7V LiPo battery, I use a 5V 2A Boost Converter Step-Up Power Module with charger, protection circuitry, 4 LEDs, and a K pad. It is based on a IP5306 and does some auto-powersaving stuff....which also causes new challenges.
+  The Dev-Board has no battery charger circuitry included. For charging the 3.7V LiPo battery, another module will be necessary
 
 * __Diode__<br>
   Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to create clean power paths and prevent back-feeding.
