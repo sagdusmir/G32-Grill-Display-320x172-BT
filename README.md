@@ -42,13 +42,13 @@ Bare device during testing.<br>Wiring of buzzer, battery, charge circuit, and po
 - Multiple **color schemes** (predefined + easy to add your own)
 - **Connection & status icons** (BLE, WiFi, battery SOC)
 - **Optional battery monitoring** the state of charge (SOC) of a connected battery can be displayed
-- **Optional MEATER® integration** shows tip temperatures & battery SOC instead of G32 probes when connected. Starting with BTpref-retro2.4.6 there is an alert if temperature specs are exceeded.
+- **Optional MEATER® integration** shows tip temperatures & battery SOC instead of G32 probes when connected. There is an alert if temperature specs are exceeded.
 - **Optional Home Assistant** connectivity that exposes most of the measurements.
 
 See [changelog.md](changelog.md).
 
 ### What is missing?
-* **Meater 2 plus (aka PRO) support:** Meater 2 plus units are not supported yet
+* **Meater 2 plus (aka PRO) support:** Meater 2 plus units are currently not supported
 * **Gas Buddy:** calibration of a new gas bottle
 * **G32 light:** setting the brightness level for turning on the light in the lid
 
