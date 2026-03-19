@@ -5,7 +5,7 @@ substitutions:
 
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-bt-mini
-  device_description: "Monitor an OW G32 grill (mini)"
+  device_description: "Monitor an OW G32 grill "
   version: "BTmini 0.2.2"
 
   # either pull values from secrets.yaml
@@ -461,6 +461,7 @@ light:
     platform: monochromatic
     output: gpio_backlight_pwm
     restore_mode: ALWAYS_ON
+    internal: true
 
 rtttl:
   id: my_rtttl
@@ -3176,13 +3177,17 @@ sensor:
 
   - platform: ble_rssi
     mac_address: ${g32_mac_address}
-    name: "BT Signalstärke"
+    name: "BT Signal Strength"
   - platform: wifi_signal
-    name: "WiFi Signal ESP G32"
+    name: "WiFi Signal Strength ESP32"
     update_interval: 10s
   - platform: internal_temperature
-    name: "CPU Temperatur ESP G32"
+    name: "CPU Temperature ESP32"
     update_interval: 10s
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
 
   - platform: ble_client
     ble_client_id: ow_g32
