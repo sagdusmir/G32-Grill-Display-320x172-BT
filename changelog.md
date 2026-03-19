@@ -1,4 +1,7 @@
 # Changelog
+* [2026-03-19] BTmini 1.0.0
+   - disable HA backlight switch
+   - enable some options that weren not accessible because of the missing settings page
 * [2026-03-15] BTmini 0.2.2
    - change IP Address wording
    - define emty text for clickable status bar label to get rid of the fallback „Text“
