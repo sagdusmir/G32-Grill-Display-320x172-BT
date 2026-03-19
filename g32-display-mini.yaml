@@ -4,9 +4,9 @@ substitutions:
   # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
   # Name of the ESPHome device (modify if you like, avoid special characters)
-  name: g32-display-bt-mini
+  name: g32-display-mini
   device_description: "Monitor an OW G32 grill "
-  version: "BTmini 0.2.2"
+  version: "BTmini 1.0.0"
 
   # either pull values from secrets.yaml
   # or have it directly in this file
@@ -16,7 +16,7 @@ substitutions:
   # wifi_password: "INSERT_YOUR_WIFI_PASSWORD"
 
   # Enter data of the newly created Home Assistant ESPHome device. Example:
-  api_encryption_key: "F1fyywUUE1DWzu0OzhDkyc4yAnfGwyEfsVNvhytrU6l="
+  api_encryption_key: "YcM9Kcc+DRDHfISFcF8FlDN0WuanM1LJV3duK/PugZA="
 
   # over-the-air updates (ESPHome CLI or Home Assistant add-On)
   # Hint: if you changed this value on the device, you might have to alter
@@ -147,6 +147,7 @@ logger:
   # baud_rate: 0  # no logging -> saves power
 
 api: # enable Home Assistant API
+  max_connections: 5
   encryption:
     key: ${api_encryption_key}
   reboot_timeout: 0s  
@@ -687,18 +688,23 @@ globals:
   - id: settings_min_gas_value_persistent
     type: int
     initial_value: '${SETTINGS_MIN_GAS_VALUE}'
+    restore_value: true
   - id: settings_min_soc_value_persistent
     type: int
     initial_value: '${SETTINGS_MIN_SOC_VALUE}'
+    restore_value: true
   - id: settings_hide_soc_persistent
     type: bool
     initial_value: '${SETTINGS_HIDE_SOC}'
+    restore_value: true
   - id: settings_hide_gas_level_persistent
     type: bool
     initial_value: '${SETTINGS_HIDE_GAS_LEVEL}'
+    restore_value: true
   - id: settings_enable_temperature_limits_persistent
     type: bool
     initial_value: 'true'
+    restore_value: true
   - id: settings_enable_auto_hiding_temperature_limits_persistent
     type: bool
     initial_value: 'true'
@@ -708,9 +714,11 @@ globals:
   - id: settings_display_timeout_value_persistent
     type: int
     initial_value: '30'
+    restore_value: true
   - id: settings_color_scheme_idx_persistent
     type: int
     initial_value: '${SETTINGS_COLOR_SCHEME_IDX}'
+    restore_value: true
 
   - id: current_ip_address
     type: std::string
@@ -720,6 +728,119 @@ text_sensor:
   - platform: wifi_info
     ip_address:
       id: wifi_ip_sensor
+
+select:
+  - platform: template
+    id: color_scheme_select
+    name: "Color Scheme"
+    optimistic: true
+    options:
+      - "white"
+      - "amber"
+      - "cyan"
+      - "night red"
+      - "green"
+      - "night blue"
+      - "purple"
+      - "yellow"
+      - "white (clean)"
+    on_value:
+      - lambda: |-
+          for (const auto& pair : id(color_schemes)) {
+            if (pair.first == x) {
+              id(settings_color_scheme_idx_persistent) = static_cast<int>(pair.second[0]);
+              id(apply_color_scheme).execute();
+              break;
+            }
+          }
+
+switch:
+  - platform: template
+    name: "Hide Battery SOC"
+    id: hide_soc_switch
+    optimistic: true
+    on_turn_on:
+      - lambda: id(settings_hide_soc_persistent) = true;
+      - lvgl.widget.refresh: battery_symbol_obj
+    on_turn_off:
+      - lambda: id(settings_hide_soc_persistent) = false;
+      - lvgl.widget.refresh: battery_symbol_obj
+
+  - platform: template
+    name: "Hide Gas Level"
+    id: hide_gas_level_switch
+    optimistic: true
+    on_turn_on:
+      - lambda: id(settings_hide_gas_level_persistent) = true;
+      - lvgl.widget.refresh: gas_level_obj
+    on_turn_off:
+      - lambda: id(settings_hide_gas_level_persistent) = false;
+      - lvgl.widget.refresh: gas_level_obj
+
+  - platform: template
+    name: "Disable Temperature Alarms"
+    id: enable_temperature_limits_switch
+    optimistic: true
+    on_turn_on:
+      - lambda: |-
+          id(settings_enable_temperature_limits_persistent) = false;
+          if (!id(settings_enable_temperature_limits_persistent)) {
+            id(zone1_limit_value) = 0;
+            id(zone2_limit_value) = 0;
+            id(zone3_limit_value) = 0;
+            id(zone4_limit_value) = 0;
+            id(sensor1_limit_value) = 0;
+            id(sensor2_limit_value) = 0;
+            id(sensor3_limit_value) = 0;
+            id(sensor4_limit_value) = 0;
+          }
+      - script.execute: refresh_all_temps
+      - script.execute: refresh_all_limits
+    on_turn_off:
+      - lambda: id(settings_enable_temperature_limits_persistent) = true;
+      - script.execute: refresh_all_temps
+      - script.execute: refresh_all_limits
+
+  - platform: template
+    name: "Disable Auto-Hiding Temperature Alarm Visualization"
+    id: enable_auto_hiding_temperature_limits_switch
+    optimistic: true
+    on_turn_on:
+      - lambda: id(settings_enable_auto_hiding_temperature_limits_persistent) = false;
+      - script.execute: refresh_all_temps
+      - script.execute: refresh_all_limits
+    on_turn_off:
+      - lambda: id(settings_enable_auto_hiding_temperature_limits_persistent) = true;
+      - script.execute: refresh_all_temps
+      - script.execute: refresh_all_limits
+
+number:
+  - platform: template
+    name: "Min Gas Value"
+    id: min_gas_value_number
+    optimistic: true
+    min_value: 5
+    max_value: 60
+    step: 5
+    unit_of_measurement: "%"
+    initial_value: 20.0
+    on_value:
+      - lambda: id(settings_min_gas_value_persistent) = int(x);
+      - lvgl.widget.refresh: [warning_on_label, gas_percent_bar]
+
+  - platform: template
+    name: "Min Battery SOC Value"
+    id: min_soc_value_number
+    optimistic: true
+    min_value: 5
+    max_value: 50
+    step: 10
+    unit_of_measurement: "%"
+    initial_value: 40.0
+    on_value:
+      - lambda: id(settings_min_soc_value_persistent) = int(x);
+      - lvgl.widget.refresh: [warning_on_label, battery_symbol]
+
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
@@ -3765,6 +3886,16 @@ script:
                 id(apply_color_scheme).execute();
             - lvgl.widget.hide: boot_screen
             - lvgl.widget.show: [status_bar_right]
+            - lambda: |-
+                int idx = id(settings_color_scheme_idx_persistent);
+                std::string name = "white";
+                for (const auto& pair : id(color_schemes)) {
+                  if (static_cast<int>(pair.second[0]) == idx) {
+                    name = pair.first;
+                    break;
+                  }
+                }
+                id(color_scheme_select).publish_state(name);
 
             # some things to refresh from persisted settings
             - lvgl.widget.refresh: battery_symbol_obj
@@ -3783,6 +3914,36 @@ script:
             - lvgl.widget.refresh: [sensor1_limit_label, sensor2_limit_label, sensor3_limit_label, sensor4_limit_label]
             - lvgl.widget.refresh: [sensor1_limit_label_bell, sensor2_limit_label_bell, sensor3_limit_label_bell, sensor4_limit_label_bell]
             - lvgl.widget.refresh: [sensor1_battery, sensor2_battery, sensor3_battery, sensor4_battery]
+            - if:
+                condition:
+                  lambda: return id(settings_hide_soc_persistent);
+                then:
+                  - switch.turn_on: hide_soc_switch
+                else:
+                  - switch.turn_off: hide_soc_switch
+            - if:
+                condition:
+                  lambda: return id(settings_hide_gas_level_persistent);
+                then:
+                  - switch.turn_on: hide_gas_level_switch
+                else:
+                  - switch.turn_off: hide_gas_level_switch
+            - if:
+                condition:
+                  lambda: return id(settings_enable_temperature_limits_persistent);
+                then:
+                  - switch.turn_off: enable_temperature_limits_switch
+                else:
+                  - switch.turn_on: enable_temperature_limits_switch
+            - if:
+                condition:
+                  lambda: return id(settings_enable_auto_hiding_temperature_limits_persistent);
+                then:
+                  - switch.turn_off: enable_auto_hiding_temperature_limits_switch
+                else:
+                  - switch.turn_on: enable_auto_hiding_temperature_limits_switch
+            - lambda: id(min_soc_value_number).publish_state(id(settings_min_soc_value_persistent));
+            - lambda: id(min_gas_value_number).publish_state(id(settings_min_gas_value_persistent));
             - globals.set:
                 id: boot_screen_hidden
                 value: 'true'
