@@ -24,7 +24,17 @@ substitutions:
   ota_password: "8fdf9f656d36180bfba92d596c9e7db4"
 
   # color scheme
-  SETTINGS_COLOR_SCHEME_IDX: "0"  # select color scheme?
+  SETTINGS_COLOR_SCHEME_IDX: "0"  # initially selected color scheme
+  color_scheme_options: |  # required for Home Assistant
+    - "white"
+    - "amber"
+    - "cyan"
+    - "night red"
+    - "green"
+    - "night blue"
+    - "purple"
+    - "yellow"
+    - "white (clean)"
   COLOR_SCHEMES: |
     //                  idx 100%      75%       50%       25%       <=25%    GOOD      BAD       LIGHT
     {
@@ -734,16 +744,7 @@ select:
     id: color_scheme_select
     name: "Color Scheme"
     optimistic: true
-    options:
-      - "white"
-      - "amber"
-      - "cyan"
-      - "night red"
-      - "green"
-      - "night blue"
-      - "purple"
-      - "yellow"
-      - "white (clean)"
+    options: ${color_scheme_options}
     on_value:
       - lambda: |-
           for (const auto& pair : id(color_schemes)) {
