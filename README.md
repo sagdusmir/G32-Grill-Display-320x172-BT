@@ -135,6 +135,10 @@ __PLANNED__ and not tested:
 ## Acknowledgments
 This project would not have been possible without the work of the community. Special thanks go to:
 
+[Esaracci](https://community.home-assistant.io/u/esaracci/) (using this hardware with esphome)
+
+[Pulpyy](https://community.home-assistant.io/u/pulpyy) (using this hardware with esphome)
+
 [JBecker32/G32-Display-480x320-BT](https://github.com/JBecker32/G32-Display-480x320-BT) (the original software project)
 
 [fschwarz86/g32](https://github.com/fschwarz86/g32)
@@ -142,8 +146,6 @@ This project would not have been possible without the work of the community. Spe
 [ralmoe/g32-docker-client](https://github.com/ralmoe/g32-docker-client)
 
 [MortenVinding/MEATER.yaml](https://gist.github.com/MortenVinding/a513c0094d0df41a4425612257b3cabc) (Meater® accuracy)
-
-[so99hero/Standalone Case JC3248W535C](https://www.thingiverse.com/thing:7127557)
 
 
 ## Disclaimer
