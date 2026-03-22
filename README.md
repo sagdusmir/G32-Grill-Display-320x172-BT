@@ -66,9 +66,10 @@ See [changelog.md](changelog.md).
 | ESP32 Dev Board                              | 1   | Amazon, AliExpress                       |   ~15€ - 20€ |
 | Battery                                      | 1   | AliExpress                               |    ~8€ - 12€ |
 | Power Switch with Reverse Voltage Protection | 1   | somewhere online                         |    ~5€ - 10€ |
-| USB 5V 2A Boost Converter Charer circuit     | 1   | AliExpress, eBay                         |       ~1€    |
+| USB 5V 2A Boost Converter + Charger circuit  | 1   | Amazon, eBay, somewhere online           |   ~20€ - 30€ |
 | Diode                                        | 2   | eBay                                     |       ~1€    |
-| Screws	                                      | ?	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
+| Screws	                                      | 4	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
+| Buzzer	                                      | 1	  | Amazon, eBay, AliExpress                 |       ~1€    |
 | some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
 | USB-C Connection Cable                       | 1   | your existing collection of cables       |       ~0€    |
 
@@ -85,14 +86,14 @@ See [changelog.md](changelog.md).
 * __Power Switch with Reverse Voltage Protection__<br>
   To minimize power draw, I am using a Pololu Mini Pushbutton Power Switch,Reverse Voltage Protection,LV (Pololu 2808) which should reduce power draw as much as possible.
 
-* __5V 2A Boost Converter Charer circuit__<br>
-  The Dev-Board has no battery charger circuitry included. For charging the 3.7V LiPo battery, another module will be necessary
+* __5V 2A Boost Converter + Charger circuit__<br>
+  The Dev-Board has no battery charger circuitry included. For charging the 3.7V LiPo battery, a Adafruit PowerBoost 500 + Charger (Powerboost 500C) is used. Do not confuse this with the "Basic" variant witchout charging.
 
 * __Diode__<br>
   Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to create clean power paths and prevent back-feeding.
 
 * __Buzzer__<br>
-  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm).
+  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm or similar).
 
 ### Wiring
 
