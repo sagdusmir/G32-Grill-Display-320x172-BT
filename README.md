@@ -66,7 +66,7 @@ See [changelog.md](changelog.md).
 | ESP32 Dev Board                              | 1   | Amazon, AliExpress                       |   ~15€ - 20€ |
 | Battery                                      | 1   | AliExpress                               |    ~8€ - 12€ |
 | Power Switch with Reverse Voltage Protection | 1   | somewhere online                         |    ~5€ - 10€ |
-| USB 5V 2A Boost Converter + Charger circuit  | 1   | Amazon, eBay, somewhere online           |   ~20€ - 30€ |
+| USB 5V 2A Boost Converter + Charger circuit  | 1   | Amazon, eBay, somewhere online           |   ~15€ - 30€ |
 | Diode                                        | 2   | eBay                                     |       ~1€    |
 | Screws	                                      | 4	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
 | Buzzer	                                      | 1	  | Amazon, eBay, AliExpress                 |       ~1€    |
