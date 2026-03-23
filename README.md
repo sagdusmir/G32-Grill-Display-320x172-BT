@@ -87,7 +87,7 @@ See [changelog.md](changelog.md).
   To minimize power draw, I am using a Pololu Mini Pushbutton Power Switch,Reverse Voltage Protection,LV (Pololu 2808) which should reduce power draw as much as possible.
 
 * __5V 2A Boost Converter + Charger circuit__<br>
-  The Dev-Board has no battery charger circuitry included. For charging the 3.7V LiPo battery, a Adafruit PowerBoost 500 + Charger (Powerboost 500C) is used. Do not confuse this with the "Basic" variant witchout charging.
+  The Dev-Board has no battery charger circuitry included. For charging the 3.7V LiPo battery, a Adafruit PowerBoost 500/1000 + Charger (Powerboost 500C / 1000C) is used. Do not confuse this with the "Basic" variant witchout charging.
 
 * __Diode__<br>
   Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to create clean power paths and prevent back-feeding.
