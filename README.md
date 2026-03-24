@@ -5,7 +5,7 @@
 [![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/sagdusmir/G32-Grill-Display-320x172-BT/main?style=flat-square&logo=github&color=blue)](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/commits/main/)
 ![GitHub license](https://img.shields.io/github/license/sagdusmir/G32-Grill-Display-320x172-BT?style=flat-square&logo=gnu&color=green)
 [![Grill make](https://img.shields.io/badge/grill-OW_G32_Connected-critical)](https://www.grillsportverein.de/forum/threads/otto-wilde-g32-smarthome.369079/page-999)
-
+[![HA support](https://img.shields.io/badge/Home_Assistant-recommended-informational?style=flat-square&logo=home-assistant&logoColor=white&color=orange)](https://home-assistant.io)
 
 This repository is a stripped down version of https://github.com/sagdusmir/G32-Grill-Display-480x320-BTpref
 
