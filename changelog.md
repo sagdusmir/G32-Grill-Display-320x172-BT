@@ -1,4 +1,7 @@
 # Changelog
+* [2026-03-25] BTmini 1.0.2
+   - show soc and gas level warning value on settings page
+   - slightly improved color schemes
 * [2026-03-25] BTmini 1.0.1
    - color scheme options for HA have now be moved to the top
    - color scheme preview on settings page (this will assist in fixing colors for the display of the dev-board)
