@@ -1,6 +1,6 @@
 # Changelog
 * [2026-03-25] BTmini 1.0.1
-   - color scheme options for HA have now be movet to the top
+   - color scheme options for HA have now be moved to the top
    - color scheme preview on settings page (this will assist in fixing colors for the display of the dev-board)
 * [2026-03-19] BTmini 1.0.0
    - disable HA backlight switch
