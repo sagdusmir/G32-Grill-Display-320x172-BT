@@ -6,7 +6,7 @@ substitutions:
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-mini
   device_description: "Monitor an OW G32 grill "
-  version: "BTmini 1.0.1"
+  version: "BTmini 1.0.2"
 
   # either pull values from secrets.yaml
   # or have it directly in this file
