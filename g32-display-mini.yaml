@@ -740,6 +740,11 @@ text_sensor:
     ip_address:
       id: wifi_ip_sensor
 
+  - platform: template
+    name: "Software Version"
+    lambda: |-
+      return std::string("${version}");
+
 select:
   - platform: template
     id: color_scheme_select
