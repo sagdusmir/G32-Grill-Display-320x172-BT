@@ -833,7 +833,7 @@ number:
     initial_value: 20.0
     on_value:
       - lambda: id(settings_min_gas_value_persistent) = int(x);
-      - lvgl.widget.refresh: [warning_on_label, gas_percent_bar]
+      - lvgl.widget.refresh: [warning_on_label, gas_percent_bar, gas_warning_label2]
 
   - platform: template
     name: "Min Battery SOC Value"
@@ -846,7 +846,7 @@ number:
     initial_value: 40.0
     on_value:
       - lambda: id(settings_min_soc_value_persistent) = int(x);
-      - lvgl.widget.refresh: [warning_on_label, battery_symbol]
+      - lvgl.widget.refresh: [warning_on_label, battery_symbol, soc_warning_label2]
 
 font:
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
@@ -3255,6 +3255,46 @@ lvgl:
                     int v2 = id(gas_percent);
                     return (to_string(v) + " g (" + to_string(v2) + "%)").c_str();
               - label:
+                  id: soc_warning_label1
+                  x: 0
+                  y: 72
+                  width: 160
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: "Warning SOC"
+              - label:
+                  id: soc_warning_label2
+                  x: 170
+                  y: 72
+                  width: 130
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: !lambda |-
+                    int v = id(min_soc_value_number).state;
+                    return (to_string(v) + "%").c_str();
+              - label:
+                  id: gas_warning_label1
+                  x: 0
+                  y: 91
+                  width: 160
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: "Warning Gas"
+              - label:
+                  id: gas_warning_label2
+                  x: 170
+                  y: 91
+                  width: 130
+                  text_align: LEFT
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  text_font: MONTSERRAT_18
+                  text: !lambda |-
+                    int v = id(min_gas_value_number).state;
+                    return (to_string(v) + "%").c_str();
+              - label:
                   id: color_100_label
                   x: 0
                   y: 152
@@ -4013,8 +4053,8 @@ script:
                   - switch.turn_off: enable_auto_hiding_temperature_limits_switch
                 else:
                   - switch.turn_on: enable_auto_hiding_temperature_limits_switch
-            - lambda: id(min_soc_value_number).publish_state(id(settings_min_soc_value_persistent));
-            - lambda: id(min_gas_value_number).publish_state(id(settings_min_gas_value_persistent));
+            - lambda: id(min_soc_value_number).publish_state(static_cast<float>(id(settings_min_soc_value_persistent)));
+            - lambda: id(min_gas_value_number).publish_state(static_cast<float>(id(settings_min_gas_value_persistent)));
             - globals.set:
                 id: boot_screen_hidden
                 value: 'true'
@@ -4284,7 +4324,10 @@ script:
           - current_version_label2
           - gas_weight_label1
           - gas_weight_label
-
+          - soc_warning_label1
+          - soc_warning_label2
+          - gas_warning_label1
+          - gas_warning_label2
           - color_100_label
           - color_75_label
           - color_50_label
