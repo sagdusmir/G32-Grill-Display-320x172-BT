@@ -25,16 +25,6 @@ substitutions:
 
   # color scheme
   SETTINGS_COLOR_SCHEME_IDX: "0"  # initially selected color scheme
-  color_scheme_options: |  # required for Home Assistant
-    - "white"
-    - "amber"
-    - "cyan"
-    - "night red"
-    - "green"
-    - "night blue"
-    - "purple"
-    - "yellow"
-    - "white (clean)"
   COLOR_SCHEMES: |
     //                  idx 100%      75%       50%       25%       <=25%    GOOD      BAD       LIGHT
     {
@@ -48,6 +38,17 @@ substitutions:
       {"yellow",        {7, 0xffda00, 0xbea300, 0x806d00, 0x262000, 0x262000, 0x64dc00, 0xff5900, 0xffff00}},
       {"white (clean)", {8, 0xffffff, 0xbfbfbf, 0x808080, 0x404040, 0x000000, 0x8bff85, 0xff5757, 0xffff00}}
     }
+
+  COLOR_SCHEME_OPTIONS:  # required for Home Assistant
+    - "white"
+    - "amber"
+    - "cyan"
+    - "night red"
+    - "green"
+    - "night blue"
+    - "purple"
+    - "yellow"
+    - "white (clean)"
 
   FORCE_SHADOW_COLOR_TO_BLACK: 'false'  # standard: use COLOR_00 for shadows
   # FORCE_SHADOW_COLOR_TO_BLACK: 'true'  # alternative: symbol and text shadows should not be visible
@@ -744,7 +745,7 @@ select:
     id: color_scheme_select
     name: "Color Scheme"
     optimistic: true
-    options: ${color_scheme_options}
+    options: ${COLOR_SCHEME_OPTIONS}
     on_value:
       - lambda: |-
           for (const auto& pair : id(color_schemes)) {
@@ -3249,6 +3250,70 @@ lvgl:
                     int v2 = id(gas_percent);
                     return (to_string(v) + " g (" + to_string(v2) + "%)").c_str();
               - label:
+                  id: color_100_label
+                  x: 0
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_100));
+                  text: " "
+              - label:
+                  id: color_75_label
+                  x: 38
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_75));
+                  text: " "
+              - label:
+                  id: color_50_label
+                  x: 76
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_50));
+                  text: " "
+              - label:
+                  id: color_25_label
+                  x: 114
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_25));
+                  text: " "
+              - label:
+                  id: color_00_label
+                  x: 152
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_00));
+                  text: " "
+              - label:
+                  id: color_good_label
+                  x: 190
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_good));
+                  text: " "
+              - label:
+                  id: color_bad_label
+                  x: 228
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_bad));
+                  text: " "
+              - label:
+                  id: color_light_label
+                  x: 266
+                  y: 152
+                  width: 38
+                  height: 20
+                  bg_color: !lambda return lv_color_hex(id(color_light));
+                  text: " "
+              - label:
                   x: 0
                   y: 0
                   bg_opa: TRANSP
@@ -4214,6 +4279,15 @@ script:
           - current_version_label2
           - gas_weight_label1
           - gas_weight_label
+
+          - color_100_label
+          - color_75_label
+          - color_50_label
+          - color_25_label
+          - color_00_label
+          - color_good_label
+          - color_bad_label
+          - color_light_label
       - delay: 1ms
 
       - lambda: |-
