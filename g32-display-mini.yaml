@@ -3215,7 +3215,7 @@ lvgl:
               - label:
                   id: current_version_label1
                   x: 0
-                  y: 34
+                  y: 36
                   width: 160
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
@@ -3224,7 +3224,7 @@ lvgl:
               - label:
                   id: current_version_label2
                   x: 170
-                  y: 34
+                  y: 36
                   width: 130
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
@@ -3233,7 +3233,7 @@ lvgl:
               - label:
                   id: gas_weight_label1
                   x: 0
-                  y: 53
+                  y: 57
                   width: 160
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
@@ -3242,7 +3242,7 @@ lvgl:
               - label:
                   id: gas_weight_label
                   x: 170
-                  y: 53
+                  y: 57
                   width: 130
                   text_font: MONTSERRAT_18
                   text_color: !lambda return lv_color_hex(id(color_100));
@@ -3257,7 +3257,7 @@ lvgl:
               - label:
                   id: soc_warning_label1
                   x: 0
-                  y: 72
+                  y: 78
                   width: 160
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
@@ -3266,7 +3266,7 @@ lvgl:
               - label:
                   id: soc_warning_label2
                   x: 170
-                  y: 72
+                  y: 78
                   width: 130
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
@@ -3277,7 +3277,7 @@ lvgl:
               - label:
                   id: gas_warning_label1
                   x: 0
-                  y: 91
+                  y: 101
                   width: 160
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
@@ -3286,7 +3286,7 @@ lvgl:
               - label:
                   id: gas_warning_label2
                   x: 170
-                  y: 91
+                  y: 101
                   width: 130
                   text_align: LEFT
                   text_color: !lambda return lv_color_hex(id(color_100));
