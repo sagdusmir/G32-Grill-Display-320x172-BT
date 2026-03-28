@@ -16,6 +16,7 @@ Focus: **mobile, cloud-independent replacement** for the official Otto Wilde app
 <img alt="Teaser Temperature Alarm" src="https://github.com/user-attachments/assets/67f30ca1-8170-49d3-b051-c44b80cde1a2" width="200">
 <img alt="Teaser Info Page" src="https://github.com/user-attachments/assets/b5609668-ac7d-4246-a799-ebf88fbedc3b" width="200">
 <img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" width="200">
+<img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" width="200">
 
 Bare device during testing.<br>Wiring of buzzer, battery, charge circuit, and power button upcoming. A case will follow once everything else  has come together.
 
