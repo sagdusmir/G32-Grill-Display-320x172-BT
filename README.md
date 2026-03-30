@@ -74,7 +74,7 @@ See [changelog.md](changelog.md).
 | Power Switch with Reverse Voltage Protection | 1   | somewhere online                         |    ~5€ - 10€ |
 | USB 5V 2A Boost Converter + Charger circuit  | 1   | AliExpress                               |     ~2€ - 5€ |
 | USB-C Connector                              | 1   | Amazon, eBay, AliExpress                 |       ~2€    |
-| Diode                                        | 1   | eBay, somewhere online                   |       ~1€    |
+| Diodes                                       | 2   | eBay, somewhere online                   |       ~1€    |
 | Screws	                                      | 4	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
 | Buzzer	                                      | 1	  | Amazon, eBay, AliExpress                 |       ~1€    |
 | some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
@@ -94,16 +94,17 @@ See [changelog.md](changelog.md).
   To minimize power draw, I am using a Pololu Mini Pushbutton Power Switch,Reverse Voltage Protection,LV (Pololu 2808) which should reduce power draw as much as possible. Unfortunately the module is a bit pricey.
 
 * __5V 2A Boost Converter + Charger circuit__<br>
-  WIP
+  I recommend using a cheap board that has an auto power-save feature. The one that I ultimately decided on goes under the name "Type-C USB 5V 2A Boost Converter Step-Up Power Module Lithium Battery Charging Protection Board LED Display USB Charger". The boost portion is actually not used because I wanted to keep it simple and have the SOC measurement working without adding another voltage divider for the voltage at the battery.
+  Arduino PowerBoost 500C / 1000C modules seem to __NOT__ offer this feature. Those would completely drain the battery in a few days.
 
 * __USB-C Connector__<br>
   To power the charger circuit it might be helpful to have a male USB-C plug breakout board to supply power for charging.
 
 * __Diode__<br>
-  Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to create clean power paths and prevent back-feeding.
+  Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to separate the charging power path a bit from the rest because the docomentation of most charge controllers is lacking all the details.
 
 * __Buzzer__<br>
-  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm or similar).
+  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm or similar). The smaller the buzzer, the easier it is to mount the ESP32 Dev-Board in the enclosure.
 
 ### Wiring
 
