@@ -72,8 +72,9 @@ See [changelog.md](changelog.md).
 | ESP32 Dev Board                              | 1   | Amazon, AliExpress                       |   ~15€ - 20€ |
 | Battery                                      | 1   | AliExpress                               |    ~8€ - 12€ |
 | Power Switch with Reverse Voltage Protection | 1   | somewhere online                         |    ~5€ - 10€ |
-| USB 5V 2A Boost Converter + Charger circuit  | 1   | Amazon, eBay, somewhere online           |   ~15€ - 30€ |
-| Diode                                        | 2   | eBay                                     |       ~1€    |
+| USB 5V 2A Boost Converter + Charger circuit  | 1   | AliExpress                               |     ~2€ - 5€ |
+| USB-C Connector                              | 1   | Amazon, eBay, AliExpress                 |       ~2€    |
+| Diode                                        | 1   | eBay, somewhere online                   |       ~1€    |
 | Screws	                                      | 4	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
 | Buzzer	                                      | 1	  | Amazon, eBay, AliExpress                 |       ~1€    |
 | some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
@@ -90,10 +91,13 @@ See [changelog.md](changelog.md).
   A 3.7V LiPo/Li-Ion Battery (1 cell) will power the ESP32 Dev Board. Because of space constraints I am going with a battery of type 702080  (7mm x 20mm x 80mm) with a capacity of 1500mAh.
 
 * __Power Switch with Reverse Voltage Protection__<br>
-  To minimize power draw, I am using a Pololu Mini Pushbutton Power Switch,Reverse Voltage Protection,LV (Pololu 2808) which should reduce power draw as much as possible.
+  To minimize power draw, I am using a Pololu Mini Pushbutton Power Switch,Reverse Voltage Protection,LV (Pololu 2808) which should reduce power draw as much as possible. Unfortunately the module is a bit pricey.
 
 * __5V 2A Boost Converter + Charger circuit__<br>
-  The Dev-Board has no battery charger circuitry included. For charging the 3.7V LiPo battery, a Adafruit PowerBoost 500/1000 + Charger (Powerboost 500C / 1000C) is used. Do not confuse this with the "Basic" variant witchout charging.
+  WIP
+
+* __USB-C Connector__<br>
+  To power the charger ciscuit it might be helpful to have a male USB-C plug breakout board to supply power for charging.
 
 * __Diode__<br>
   Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to create clean power paths and prevent back-feeding.
