@@ -97,7 +97,7 @@ See [changelog.md](changelog.md).
   WIP
 
 * __USB-C Connector__<br>
-  To power the charger ciscuit it might be helpful to have a male USB-C plug breakout board to supply power for charging.
+  To power the charger circuit it might be helpful to have a male USB-C plug breakout board to supply power for charging.
 
 * __Diode__<br>
   Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to create clean power paths and prevent back-feeding.
