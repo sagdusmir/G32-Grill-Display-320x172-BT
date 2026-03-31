@@ -18,7 +18,7 @@ Focus: **mobile, cloud-independent replacement** for the official Otto Wilde app
 <img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" width="200">
 <img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" width="200">
 
-Bare device during testing.<br>Wiring of buzzer, battery, charge circuit, and power button upcoming. A case will follow once everything else  has come together.
+Bare device during testing.<br>
 
 # Table of Contents
 
@@ -128,8 +128,9 @@ top of the pcb horizontally to the right (for both: charger module and USB-C bre
 - connect ESP32 VBUS and GND to the power input of the charger module with the Schottky diode as shown
 
 The Pololu can be *carefully* slot into place (tight fit) with the wires pointing to the inside. The charger module with the installed USB plug should fit right inside the case (same orientation as in the wiring sketch). Place the piezo buzzer
-on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapton tape of exposed contacts might touch each other.
+on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapton tape if exposed contacts might touch each other.
 
+<img alt="wiring draft" src="https://github.com/user-attachments/assets/663e63a1-9d87-42c4-b06f-ce515e9edccc" width="200">
 
 ## Uploading the software to the ESP
 
