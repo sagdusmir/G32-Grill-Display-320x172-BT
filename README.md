@@ -74,10 +74,13 @@ See [changelog.md](changelog.md).
 | Power Switch with Reverse Voltage Protection | 1   | somewhere online                         |    ~5€ - 10€ |
 | USB 5V 2A Boost Converter + Charger circuit  | 1   | AliExpress                               |     ~2€ - 5€ |
 | USB-C Connector                              | 1   | Amazon, eBay, AliExpress                 |       ~2€    |
-| Diodes                                       | 2   | eBay, somewhere online                   |       ~1€    |
-| Screws	                                      | 4	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
-| Buzzer	                                      | 1	  | Amazon, eBay, AliExpress                 |       ~1€    |
+| 2 pin Wire Connectors                        | n   | Amazon, eBay, AliExpress                 |       ~2€    |
+| Diode                                        | 1   | eBay, somewhere online                   |       ~1€    |
+| Screws	                                     | 4	 | hardware store, eBay, Amazon, AliExpress |       ~1€    |
+| Buzzer	                                     | 1	 | Amazon, eBay, AliExpress                 |       ~1€    |
 | some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
+| Kapton tape or electrical tape               | ?   | AliExpress, Amazon, eBay                 |       ~0€    |
+| Case                                         | 1   | a friend with a 3d printer               |    a beer    |
 | USB-C Connection Cable                       | 1   | your existing collection of cables       |       ~0€    |
 
 
@@ -98,17 +101,34 @@ See [changelog.md](changelog.md).
   Arduino PowerBoost 500C / 1000C modules seem to __NOT__ offer this feature. Those would completely drain the battery in a few days.
 
 * __USB-C Connector__<br>
-  To power the charger circuit it might be helpful to have a male USB-C plug breakout board to supply power for charging.
+  To power the charger circuit it is very helpful to have a male USB-C plug breakout board to supply power. The solder pads / USB port on the backside of my pcb was only used for power output.
+
+* __2 pin Wire Connectors__<br>
+  I used a few micro JST1.25 2pin connectors (male + female) to keep things modular. At least battery should be easy do disconnect so you do not have to solder the wires while it is connected.
 
 * __Diode__<br>
-  Two Schottky Diodes with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to separate the charging power path a bit from the rest because the docomentation of most charge controllers is lacking all the details.
+  A Schottky Diode with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to separate the charging power path a bit from the rest because the documentation of most charge controllers will not be that detailed.
 
 * __Buzzer__<br>
-  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm or similar). The smaller the buzzer, the easier it is to mount the ESP32 Dev-Board in the enclosure.
+  A __passive__ piezo buzzer.<br>Configured pins are GPIO5 amd GPIO6. The buzzer should be rather small to fit inside tha case (e.g. ⌀13mm x 2.5mm or similar). The smaller the buzzer, the easier it is to mount the ESP32 Dev-Board in the enclosure. Even a "Universal Passive Buzzer 12085" (12mm x 8.5mm) will fit if you keep wires short.
+
+* __Case__<br>
+  There is a 3D model of a case in the `misc` folder. Using the case.m3f file is the easiest. If that does not work for you, you can give the two .stl files a try. I placed the main case with the bottom flat on the print bed. Enabled raft and manually added tree support from the bed to the underside of the power button, to the top of the usb-port cutout and in a straight vertical line in the middle of the back of the case so it does not tip over while printing. For the battery cover i placed the short staright edge on the build plate and manually added tree support to each untgerside of the clips and in a straight vertical line in the middle of the back to add some stability. I included some images that show where I painted support structures.
 
 ### Wiring
 
-__PLANNED__ and not tested:
+Important:<br>
+the Pololu push button will point to the outside of the case, so make sure to have the wires on the opposite side pointing
+towards the other comonents.
+Space is limited, so connect the USB-C breakout board to the charger as shown in the wiring draft and solder wires from the
+top of the pcb horizontally to the right (for both: charger module and USB-C breakout board). If the point in any other direction, you will struggle to fot everything in the case. 
+
+- connect Pololu VOUT and GND to ESP32 BAT and GND
+- connect Pololu VIN and GND in parallel with the battery to the battery pads of the charger module
+- connect ESP32 VBUS and GND to the power input of the charger module with the Schottky diode as shown
+
+The Pololu can be *carefully* slot into place (tight fit) with the wires pointing to the inside. The charger module with the installed USB plug should fit right inside the case (same orientation as in the wiring sketch). Place the piezo buzzer
+on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapton tape of exposed contacts might touch each other.
 
 
 ## Uploading the software to the ESP
