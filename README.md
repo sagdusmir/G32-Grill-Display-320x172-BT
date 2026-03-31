@@ -116,10 +116,10 @@ See [changelog.md](changelog.md).
 
 * __Case__<br>
   There is a 3D model of a case in the `misc` folder. Using the case.m3f file is the easiest. If that does not work for you, you can give the two .stl files a try. I placed the main case with the bottom flat on the print bed. Enabled raft and manually added tree support from the bed to the underside of the power button, to the top of the usb-port cutout and in a straight vertical line in the middle of the back of the case so it does not tip over while printing. For the battery cover i placed the short staright edge on the build plate and manually added tree support to each untgerside of the clips and in a straight vertical line in the middle of the back to add some stability. I included some images that show where I painted support structures.
-  <br><img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" width="200">
-  <img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" width="200">
-  <img alt="with case gauges" src="https://github.com/user-attachments/assets/d308571a-fcc9-4c36-a46e-7dd72d85de2d" width="200">
-  <img alt="with case about" src="https://github.com/user-attachments/assets/ecf448ac-25a9-4945-a332-278aee3c940b" width="200">
+  <br><img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" height="175">
+  <img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" height="175">
+  <img alt="with case gauges" src="https://github.com/user-attachments/assets/d308571a-fcc9-4c36-a46e-7dd72d85de2d" height="175">
+  <img alt="with case about" src="https://github.com/user-attachments/assets/ecf448ac-25a9-4945-a332-278aee3c940b" height="175">
 
 
 ### Wiring
