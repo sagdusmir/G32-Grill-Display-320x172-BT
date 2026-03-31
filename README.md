@@ -97,11 +97,13 @@ See [changelog.md](changelog.md).
 
 * __5V 2A Boost Converter + Charger circuit__<br>
   I recommend using a cheap board that has an auto power-save feature. The one that I ultimately decided on goes under the name "Type-C USB 5V 2A Boost Converter Step-Up Power Module Lithium Battery Charging Protection Board LED Display USB Charger". The boost portion is actually not used because I wanted to keep it simple and have the SOC measurement working without adding another voltage divider for the voltage at the battery.
-  Arduino PowerBoost 500C / 1000C modules seem to __NOT__ offer this feature. Those would completely drain the battery in a few days. <img alt="charger module" src="https://github.com/user-attachments/assets/db2495e7-48c3-438e-8649-f1bb896ee21a" width="200">
+  Arduino PowerBoost 500C / 1000C modules seem to __NOT__ offer this feature. Those would completely drain the battery in a few days.
+  <br><img alt="charger module" src="https://github.com/user-attachments/assets/db2495e7-48c3-438e-8649-f1bb896ee21a" width="200">
 
 
 * __USB-C Connector__<br>
-  To power the charger circuit it is very helpful to have a male USB-C plug breakout board to supply power. The solder pads / USB port on the backside of my pcb was only used for power output. <img alt="usb-c plug breakout board" src="https://github.com/user-attachments/assets/3e43f463-0009-4022-a160-d33692dad432" width="200">
+  To power the charger circuit it is very helpful to have a male USB-C plug breakout board to supply power. The solder pads / USB port on the backside of my pcb was only used for power output.
+  <br><img alt="usb-c plug breakout board" src="https://github.com/user-attachments/assets/3e43f463-0009-4022-a160-d33692dad432" width="200">
 
 * __2 pin Wire Connectors__<br>
   I used a few micro JST1.25 2pin connectors (male + female) to keep things modular. At least battery should be easy do disconnect so you do not have to solder the wires while it is connected.
@@ -114,10 +116,10 @@ See [changelog.md](changelog.md).
 
 * __Case__<br>
   There is a 3D model of a case in the `misc` folder. Using the case.m3f file is the easiest. If that does not work for you, you can give the two .stl files a try. I placed the main case with the bottom flat on the print bed. Enabled raft and manually added tree support from the bed to the underside of the power button, to the top of the usb-port cutout and in a straight vertical line in the middle of the back of the case so it does not tip over while printing. For the battery cover i placed the short staright edge on the build plate and manually added tree support to each untgerside of the clips and in a straight vertical line in the middle of the back to add some stability. I included some images that show where I painted support structures.
-<img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" width="200">
-<img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" width="200">
-<img alt="with case gauges" src="https://github.com/user-attachments/assets/d308571a-fcc9-4c36-a46e-7dd72d85de2d" width="200">
-<img alt="with case about" src="https://github.com/user-attachments/assets/ecf448ac-25a9-4945-a332-278aee3c940b" width="200">
+  <br><img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" width="200">
+  <img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" width="200">
+  <img alt="with case gauges" src="https://github.com/user-attachments/assets/d308571a-fcc9-4c36-a46e-7dd72d85de2d" width="200">
+  <img alt="with case about" src="https://github.com/user-attachments/assets/ecf448ac-25a9-4945-a332-278aee3c940b" width="200">
 
 
 ### Wiring
@@ -134,8 +136,7 @@ top of the pcb horizontally to the right (for both: charger module and USB-C bre
 
 The Pololu can be *carefully* slot into place (tight fit) with the wires pointing to the inside. The charger module with the installed USB plug should fit right inside the case (same orientation as in the wiring sketch). Place the piezo buzzer
 on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapton tape if exposed contacts might touch each other.
-
-<img alt="wiring draft" src="https://github.com/user-attachments/assets/663e63a1-9d87-42c4-b06f-ce515e9edccc" width="200">
+<br><img alt="wiring draft" src="https://github.com/user-attachments/assets/663e63a1-9d87-42c4-b06f-ce515e9edccc" width="200">
 
 ## Uploading the software to the ESP
 
