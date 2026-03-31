@@ -106,7 +106,7 @@ See [changelog.md](changelog.md).
   <br><img alt="usb-c plug breakout board" src="https://github.com/user-attachments/assets/3e43f463-0009-4022-a160-d33692dad432" width="200">
 
 * __2 pin Wire Connectors__<br>
-  I used a few micro JST1.25 2pin connectors (male + female) to keep things modular. At least battery should be easy do disconnect so you do not have to solder the wires while it is connected.
+  I used a few micro JST1.25 2pin connectors (male + female) to keep things modular. At least the battery should be easy do disconnect so you do not have to solder the wires while it is connected.
 
 * __Diode__<br>
   A Schottky Diode with a low voltage drop of 0.3-0.4V (e.g. 1N5819) to separate the charging power path a bit from the rest because the documentation of most charge controllers will not be that detailed.
