@@ -128,7 +128,7 @@ Important:<br>
 the Pololu push button will point to the outside of the case, so make sure to have the wires on the opposite side pointing
 towards the other comonents.
 Space is limited, so connect the USB-C breakout board to the charger as shown in the wiring draft and solder wires from the
-top of the pcb horizontally to the right (for both: charger module and USB-C breakout board). If the point in any other direction, you will struggle to fot everything in the case. 
+top of the pcb horizontally to the right (for both: charger module and USB-C breakout board). If they point in any other direction, you will struggle to stuff everything into the case. 
 
 - connect Pololu VOUT and GND to ESP32 BAT and GND
 - connect Pololu VIN and GND in parallel with the battery to the battery pads of the charger module
