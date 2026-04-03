@@ -118,11 +118,7 @@ See [changelog.md](changelog.md).
 
 * __Case__<br>
   There is a 3D model of a case in the `misc` folder. Using the case.m3f file is the easiest. If that does not work for you, you can give the two .stl files a try. I placed the main case with the bottom flat on the print bed. Enabled raft and manually added tree support from the bed to the underside of the power button, to the top of the usb-port cutout and in a straight vertical line in the middle of the back of the case so it does not tip over while printing. For the battery cover i placed the short staright edge on the build plate and manually added tree support to each untgerside of the clips and in a straight vertical line in the middle of the back to add some stability. I included some images in the repository that show where I painted support structures. __NOTE__: Do not try to operate the button before installing the Pololu. You will probably snap it if there is nothing to limit its way of travel.
-  <br><img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" height="175">
-  <img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" height="175">
-  <img alt="with case gauges" src="https://github.com/user-attachments/assets/d308571a-fcc9-4c36-a46e-7dd72d85de2d" height="175">
-  <img alt="with case about" src="https://github.com/user-attachments/assets/ecf448ac-25a9-4945-a332-278aee3c940b" height="175">
-
+  <br><img alt="Teaser Testing Case Design Render" src="https://github.com/user-attachments/assets/e653098a-848d-4d84-96ad-7d0f5163ddc0" height="175">
 
 ### Wiring and Assembly
 
@@ -157,6 +153,9 @@ on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapt
 
 - put the buzzer on top of the charger borad and install the display (do not pinch the wires or trap any of them between the display and the mounting posts)<br>
   <img alt="assembly_6_install_display_without_trapping_wires_below_the_mounting_posts" src="https://github.com/user-attachments/assets/3c0600a7-1d33-40e4-8706-9ef785acba9a" height="175">
+  <img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" height="175">
+  <img alt="with case gauges" src="https://github.com/user-attachments/assets/d308571a-fcc9-4c36-a46e-7dd72d85de2d" height="175">
+  <img alt="with case about" src="https://github.com/user-attachments/assets/ecf448ac-25a9-4945-a332-278aee3c940b" height="175">
 
 ## Uploading the software to the ESP
 
