@@ -154,8 +154,10 @@ on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapt
 - put the buzzer on top of the charger borad and install the display (do not pinch the wires or trap any of them between the display and the mounting posts)<br>
   <img alt="assembly_6_install_display_without_trapping_wires_below_the_mounting_posts" src="https://github.com/user-attachments/assets/3c0600a7-1d33-40e4-8706-9ef785acba9a" height="175">
   <img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" height="175">
-  <img alt="with case gauges" src="https://github.com/user-attachments/assets/d308571a-fcc9-4c36-a46e-7dd72d85de2d" height="175">
-  <img alt="with case about" src="https://github.com/user-attachments/assets/ecf448ac-25a9-4945-a332-278aee3c940b" height="175">
+  <img alt="impression" src="https://github.com/user-attachments/assets/a1ae70d3-7fb6-4171-a393-d219c019fa72" height="175">
+  <img alt="impression" src="https://github.com/user-attachments/assets/66e71921-71ec-4c2d-8378-c14c80f37fdd" height="175">
+  <img alt="impression" src="https://github.com/user-attachments/assets/fc15aabd-d76b-46d3-9666-4b7a5720aba8" height="175">
+
 
 ## Uploading the software to the ESP
 
