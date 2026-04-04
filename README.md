@@ -50,7 +50,7 @@ Bare device during testing.<br>
 - **Connection & status icons** (BLE, WiFi, battery SOC)
 - **Optional battery monitoring** the state of charge (SOC) of a connected battery can be displayed
 - **Optional MEATER® integration** with **automatic detection** shows tip temperatures & battery SOC instead of G32 probes when connected. There is an alert if temperature specs are exceeded.
-- **Optional Home Assistant** connectivity that exposes most of the measurements and allows confguring some settings of the device that can not be ocontrolled using the UI on the device itself.
+- **Optional Home Assistant** connectivity that exposes most of the measurements and allows confguring some settings of the device that can not be ocontrolled using the UI on the device itself (min SOC level, min gas bottle level, color scheme, hide SOC, hide gas bottle level).
 
 See [changelog.md](changelog.md).
 
