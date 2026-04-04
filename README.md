@@ -77,8 +77,8 @@ See [changelog.md](changelog.md).
 | USB-C Connector                              | 1   | Amazon, eBay, AliExpress                 |       ~2€    |
 | 2 pin Wire Connectors                        | n   | Amazon, eBay, AliExpress                 |       ~2€    |
 | Diode                                        | 1   | eBay, somewhere online                   |       ~1€    |
-| Screws	                                     | 4	 | hardware store, eBay, Amazon, AliExpress |       ~1€    |
-| Buzzer	                                     | 1	 | Amazon, eBay, AliExpress                 |       ~1€    |
+| Screws	                                      | 4	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
+| Buzzer	                                      | 1	  | Amazon, eBay, AliExpress                 |       ~1€    |
 | some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
 | Kapton tape or electrical tape               | ?   | AliExpress, Amazon, eBay                 |       ~0€    |
 | Case                                         | 1   | a friend with a 3d printer               |    a beer    |
@@ -144,7 +144,7 @@ on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapt
 - component wiring overview for orientation<br>
   <img alt="assembly_2_wiring_overview" src="https://github.com/user-attachments/assets/f0d8183d-8fa4-4e52-bfec-3b7fd0f4cf96" height="175">
 
-- install power switch by sliding it all the way down between the mounting posts (tight fit)<br>
+- install power switch by sliding it all the way down between the mounting posts (tight fit, and the top is intended to stick out a bit)<br>
   <img alt="assembly_3_slide_pololu_down_the_case" src="https://github.com/user-attachments/assets/b486c4b0-cdd1-49fb-b5d4-5a63f61441a7" height="175">
 
 - install the charger board with the USB-C breakout borad plugged in and push it down to make room for the buzzer and the wiring<br>
