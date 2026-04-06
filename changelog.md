@@ -1,6 +1,7 @@
 # Changelog
 * [2026-04-06] BTmini 1.0.3
    - minor changes to the battery cover model
+   - no software changes
 * [2026-03-25] BTmini 1.0.2
    - show soc and gas level warning value on settings page
    - slightly improved color schemes
