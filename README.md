@@ -157,6 +157,8 @@ on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapt
   <img alt="impression" src="https://github.com/user-attachments/assets/a1ae70d3-7fb6-4171-a393-d219c019fa72" height="175">
   <img alt="impression" src="https://github.com/user-attachments/assets/66e71921-71ec-4c2d-8378-c14c80f37fdd" height="175">
   <img alt="impression" src="https://github.com/user-attachments/assets/fc15aabd-d76b-46d3-9666-4b7a5720aba8" height="175">
+  <img alt="comparison" src="https://github.com/user-attachments/assets/809fd282-7746-416c-8c64-a635fd3c5cf7" height="175">
+  <img alt="alternative case design idea" src="https://github.com/user-attachments/assets/e1d44edf-de7c-4f18-817d-e06a43dc1bf2" height="175">
 
 
 ## Uploading the software to the ESP
