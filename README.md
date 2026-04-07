@@ -43,9 +43,10 @@ Bare device during testing.<br>
 - **Automatic detection** of a near by G32 Connected
 - Real-time temperatures for up to **4 grill zones** + **4 external probes**
 - **Gas level** monitoring (if GasBuddy is installed)
-- **Alarms** — visual + optional buzzer for temperature limits and timer
+- **Alarms** — visual indicator + optional buzzer for temperature limits and other alarms
 - Touchscreen configuration
-  - tap gauges to configure a temperature alarm
+  - tap gauges to configure a temperature alarm (if the feature has not been disabled)
+  - tap the rightmost status bar to see some other details
 - Multiple **color schemes** (predefined + easy to add your own)
 - **Connection & status icons** (BLE, WiFi, battery SOC)
 - **Optional battery monitoring** the state of charge (SOC) of a connected battery can be displayed
