@@ -99,7 +99,7 @@ See [changelog.md](changelog.md).
 
 * __5V 2A Boost Converter + Charger circuit__<br>
   I recommend using a cheap board that has an auto power-save feature. The one that I ultimately decided on goes under the name "Type-C USB 5V 2A Boost Converter Step-Up Power Module Lithium Battery Charging Protection Board LED Display USB Charger". The boost portion is actually not used because I wanted to keep it simple and have the SOC measurement working without adding another voltage divider for the voltage at the battery.
-  Arduino PowerBoost 500C / 1000C modules seem to __NOT__ offer this feature. Those would completely drain the battery in a few days.
+  Arduino PowerBoost 500C / 1000C modules seem to __NOT__ offer an automatic power-save feature, so this would completely drain the battery in a few days.
   <br><img alt="charger module" src="https://github.com/user-attachments/assets/db2495e7-48c3-438e-8649-f1bb896ee21a" width="200">
 
 
