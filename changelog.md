@@ -1,4 +1,6 @@
 # Changelog
+* [2026-04-12] BTmini 1.0.4
+
 * [2026-04-06] BTmini 1.0.3
    - minor changes to the battery cover model
    - no software changes
