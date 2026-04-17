@@ -1,4 +1,6 @@
 # Changelog
+* [2026-04-17] BTmini 1.0.5
+   - add compatibility with esphome 2026.4.0
 * [2026-04-12] BTmini 1.0.4
    - minor changes to the case model
    - no software changes
