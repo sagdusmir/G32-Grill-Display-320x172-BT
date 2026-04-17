@@ -6,7 +6,7 @@ substitutions:
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-mini
   device_description: "Monitor an OW G32 grill "
-  version: "BTmini 1.0.4"
+  version: "BTmini 1.0.6"
 
   # either pull values from secrets.yaml
   # or have it directly in this file
@@ -113,6 +113,7 @@ substitutions:
 esphome:
   name: ${name}
   build_path: /tmp/esphome_build/${name}
+  min_version: "2026.4.0"
 
   project:
     name: "g32.bt_display320_172"
@@ -435,7 +436,7 @@ spi:  # used for display
   mosi_pin: GPIO2
 
 display:
-  - platform: ili9xxx
+  - platform: mipi_spi
     id: my_display
     model: ST7789V
     dc_pin: GPIO15
