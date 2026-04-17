@@ -1,13 +1,6 @@
 # G32 Connected Grill Monitor and Display MINI
 
 
-<h1>ATTENTION: Not compatible with esphome 2026.4.0!!!<h1>
-<h1>ATTENTION: Not compatible with esphome 2026.4.0!!!<h1>
-<h1>ATTENTION: Not compatible with esphome 2026.4.0!!!<h1>
-<h1>ATTENTION: Not compatible with esphome 2026.4.0!!!<h1>
-<h1>ATTENTION: Not compatible with esphome 2026.4.0!!!<h1>
-
-
 [![GitHub release](https://img.shields.io/github/v/release/sagdusmir/G32-Grill-Display-320x172-BT?style=flat-square&logo=github&color=blue)](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/releases/latest)
 [![GitHub Release Date](https://img.shields.io/github/release-date/sagdusmir/G32-Grill-Display-320x172-BT?style=flat-square&logo=github&color=blue)](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/releases)
 [![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/t/sagdusmir/G32-Grill-Display-320x172-BT/main?style=flat-square&logo=github&color=blue)](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/commits/main/)
