@@ -3792,6 +3792,7 @@ sensor:
     ble_client_id: meater0
     type: characteristic
     name: "Meater 1 Battery SOC"
+    unit_of_measurement: "%"    
     service_uuid: ${meater_service_uuid}
     characteristic_uuid: ${meater_characteristic_uuid_battery}
     update_interval: 10s
@@ -3805,6 +3806,7 @@ sensor:
     ble_client_id: meater1
     type: characteristic
     name: "Meater 2 Battery SOC"
+    unit_of_measurement: "%"
     service_uuid: ${meater_service_uuid}
     characteristic_uuid: ${meater_characteristic_uuid_battery}
     update_interval: 10s
@@ -3818,6 +3820,7 @@ sensor:
     ble_client_id: meater2
     type: characteristic
     name: "Meater 3 Battery SOC"
+    unit_of_measurement: "%"    
     service_uuid: ${meater_service_uuid}
     characteristic_uuid: ${meater_characteristic_uuid_battery}
     update_interval: 10s
@@ -3831,6 +3834,7 @@ sensor:
     ble_client_id: meater3
     type: characteristic
     name: "Meater 4 Battery SOC"
+    unit_of_measurement: "%"
     service_uuid: ${meater_service_uuid}
     characteristic_uuid: ${meater_characteristic_uuid_battery}
     update_interval: 10s
