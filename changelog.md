@@ -1,4 +1,6 @@
 # Changelog
+* [2026-05-01] BTmini 1.1.0
+   - refinemanet of temperature limits page by adding a +1 and -1 button next to the slider
 * [2026-04-17] BTmini 1.0.6
    - add compatibility with esphome 2026.4.0
 * [2026-04-12] BTmini 1.0.4
