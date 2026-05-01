@@ -13,9 +13,9 @@ This repository is a stripped down version of https://github.com/sagdusmir/G32-G
 
 Focus: **mobile, cloud-independent replacement** for the official Otto Wilde app / Grill Buddy — no cloud login, no Otto Wilde servers. Direct BLE connection to the grill (tested with firmware **v1.4.5**; older "v13" not compatible).
 
-<img alt="Teaser Gauges" src="https://github.com/user-attachments/assets/7477aff2-aa70-4a29-8a00-d886d874ef73" width="200">
-<img alt="Teaser Temperature Alarm" src="https://github.com/user-attachments/assets/67f30ca1-8170-49d3-b051-c44b80cde1a2" width="200">
-<img alt="Teaser Info Page" src="https://github.com/user-attachments/assets/b5609668-ac7d-4246-a799-ebf88fbedc3b" width="200">
+<img alt="Teaser Gauges" src="https://github.com/user-attachments/assets/7477aff2-aa70-4a29-8a00-d886d874ef73" height="150">
+<img alt="Teaser Temperature Alarm" src="https://github.com/user-attachments/assets/cb68fa71-7baf-4253-ba44-360a564703f2" height="150" />
+<img alt="Teaser Info Page" src="https://github.com/user-attachments/assets/b5609668-ac7d-4246-a799-ebf88fbedc3b" height="150">
 
 
 Bare device during testing.<br>
