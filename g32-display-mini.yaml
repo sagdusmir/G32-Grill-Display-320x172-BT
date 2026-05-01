@@ -6,7 +6,7 @@ substitutions:
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-mini
   device_description: "Monitor an OW G32 grill "
-  version: "BTmini 1.0.6"
+  version: "BTmini 1.1.0"
 
   # either pull values from secrets.yaml
   # or have it directly in this file
@@ -850,6 +850,13 @@ number:
       - lvgl.widget.refresh: [warning_on_label, battery_symbol, soc_warning_label2]
 
 font:
+  - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
+    # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
+    id: ICON_FONT_30
+    size: 30
+    glyphs:
+      - "\U000F15CB" # mdi-numeric-positive-1
+      - "\U000F1052" # mdi-numeric-negative-1
   - file: 'https://raw.githubusercontent.com/sagdusmir/G32-Grill-Display-480x320-BTpref/BTpref-retro/fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     # file: 'fonts/MaterialDesign-Webfont/materialdesignicons-webfont.ttf'
     id: ICON_FONT_20
@@ -3039,7 +3046,7 @@ lvgl:
             text: "0"
         - label:
             id: sensor_limits_max_value
-            x: 234
+            x: 174
             y: 30
             width: 40
             text_font: MONTSERRAT_16
@@ -3052,7 +3059,7 @@ lvgl:
             x: 30
             y: 75
             height: 15
-            width: 244
+            width: 184
             bg_color: !lambda return lv_color_hex(id(color_25));
             min_value: 0
             max_value: ${Zone_Max}
@@ -3070,7 +3077,7 @@ lvgl:
                     return (to_string(static_cast<int>(id(sensor_limit_value))) + "°C").c_str();
         - label:
             id: sensor_limit_label
-            x: 117
+            x: 87
             y: 30
             width: 70
             text_font: MONTSERRAT_20
@@ -3079,11 +3086,59 @@ lvgl:
             text_color: !lambda return lv_color_hex(id(color_100));
 
         - button:
+            id: sensor_limits_button_inc
+            x: 244
+            y: 16
+            width: 60
+            height: 48
+            bg_color: !lambda return lv_color_hex(id(color_50));
+            shadow_color: !lambda return lv_color_hex(id(color_25));
+            widgets:
+              - label:
+                  id: sensor_limits_button_inc_label
+                  align: CENTER
+                  text_font: ICON_FONT_30
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  bg_color: !lambda return lv_color_hex(id(color_50));
+                  text: "\U000F15CB"
+            on_click:
+              then:
+                - lambda: |-
+                    id(sensor_limit_value) = std::max(id(sensor_limit_value) + 1, 0);
+                - lvgl.slider.update:
+                    id: sensor_limit_slider
+                    value: !lambda return id(sensor_limit_value);
+
+        - button:
+            id: sensor_limits_button_dec
+            x: 244
+            y: 70
+            width: 60
+            height: 48
+            bg_color: !lambda return lv_color_hex(id(color_50));
+            shadow_color: !lambda return lv_color_hex(id(color_25));
+            widgets:
+              - label:
+                  id: sensor_limits_button_dec_label
+                  align: CENTER
+                  text_font: ICON_FONT_30
+                  text_color: !lambda return lv_color_hex(id(color_100));
+                  bg_color: !lambda return lv_color_hex(id(color_50));
+                  text: "\U000F1052"
+            on_click:
+              then:
+                - lambda: |-
+                    id(sensor_limit_value) = std::max(id(sensor_limit_value) - 1, 0);
+                - lvgl.slider.update:
+                    id: sensor_limit_slider
+                    value: !lambda return id(sensor_limit_value);
+
+        - button:
             id: sensor_limits_button_clear
             x: 0
-            y: 120
+            y: 124
             width: 142
-            height: 52
+            height: 48
             bg_color: !lambda return lv_color_hex(id(color_50));
             shadow_color: !lambda return lv_color_hex(id(color_25));
             widgets:
@@ -3104,9 +3159,9 @@ lvgl:
         - button:
             id: sensor_limits_button_okay
             x: 162
-            y: 120
+            y: 124
             width: 142
-            height: 52
+            height: 48
             bg_color: !lambda return lv_color_hex(id(color_50));
             shadow_color: !lambda return lv_color_hex(id(color_25));
             widgets:
@@ -4313,6 +4368,10 @@ script:
           - sensor_limits_max_value
           - sensor_limit_label
           - sensor_limit_slider
+          - sensor_limits_button_inc
+          - sensor_limits_button_inc_label
+          - sensor_limits_button_dec
+          - sensor_limits_button_dec_label
           - sensor_limits_button_clear
           - sensor_limits_button_clear_label
           - sensor_limits_button_okay
