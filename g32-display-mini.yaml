@@ -3070,9 +3070,9 @@ lvgl:
                     return (to_string(static_cast<int>(id(sensor_limit_value))) + "°C").c_str();
         - label:
             id: sensor_limit_label
-            x: 122
+            x: 117
             y: 30
-            width: 60
+            width: 70
             text_font: MONTSERRAT_20
             text_align: CENTER
             text: "0°C"
