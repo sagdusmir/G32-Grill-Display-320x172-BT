@@ -81,7 +81,7 @@ See [changelog.md](changelog.md).
 | Diode                                        | 1   | eBay, somewhere online                   |       ~1€    |
 | Screws	                                      | 4	  | hardware store, eBay, Amazon, AliExpress |       ~1€    |
 | Buzzer	                                      | 1	  | Amazon, eBay, AliExpress                 |       ~1€    |
-| some wires                                   | n   | AliExpress, Amazon, eBay                 |       ~2€    |
+| some wires (soft silicone wire recommended)  | n   | AliExpress, Amazon, eBay                 |       ~2€    |
 | Kapton tape or electrical tape               | ?   | AliExpress, Amazon, eBay                 |       ~0€    |
 | Case                                         | 1   | a friend with a 3d printer               |    a beer    |
 | USB-C Connection Cable                       | 1   | your existing collection of cables       |       ~0€    |
