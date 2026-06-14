@@ -407,8 +407,8 @@ touchscreen:
   - platform: axs5106
     id: my_touchscreen
     i2c_id: touchscreen_bus
-    interrupt_pin: 21
-    reset_pin: 20
+    interrupt_pin: GPIO21
+    reset_pin: GPIO20
     calibration:
       x_min: 0
       y_min: 0
