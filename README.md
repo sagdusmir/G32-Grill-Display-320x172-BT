@@ -106,7 +106,7 @@ See [changelog.md](changelog.md).
 
 
 * __USB-C Connector__<br>
-  To power the charger circuit it is very helpful to have a male USB-C plug breakout board to supply power. The solder pads / USB port on the backside of my pcb was only used for power output.
+  To power the charger circuit it is very helpful to have a male USB-C plug breakout board to supply power. The solder pads / USB port on the backside of my pcb were only used for power output and I found no accessible pads to provide power directly to the charger circuit.
   <br><img alt="usb-c plug breakout board" src="https://github.com/user-attachments/assets/3e43f463-0009-4022-a160-d33692dad432" width="200">
 
 * __2 pin Wire Connectors__<br>
