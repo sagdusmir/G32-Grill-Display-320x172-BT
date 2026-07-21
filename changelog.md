@@ -1,4 +1,6 @@
 # Changelog
+* [2026-07-21] BTmini 1.1.1
+   - minor fix: check for g32_firebox_open
 * [2026-05-01] BTmini 1.1.0
    - refinement of temperature limits page by adding a +1 and -1 button next to the slider
 * [2026-04-17] BTmini 1.0.6
