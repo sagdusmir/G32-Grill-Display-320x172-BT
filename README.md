@@ -146,14 +146,14 @@ on top and install the ESP32 Dev Board to close everything up. Use a bit of Kapt
 - component wiring overview for orientation<br>
   <img alt="assembly_2_wiring_overview" src="https://github.com/user-attachments/assets/f0d8183d-8fa4-4e52-bfec-3b7fd0f4cf96" height="175">
 
-- install power switch by sliding it all the way down between the mounting posts (tight fit, and the top is intended to stick out a bit)<br>
+- install the power switch by sliding it all the way down between the mounting posts (tight fit, and the top is intended to stick out a bit)<br>
   <img alt="assembly_3_slide_pololu_down_the_case" src="https://github.com/user-attachments/assets/b486c4b0-cdd1-49fb-b5d4-5a63f61441a7" height="175">
 
 - install the charger board with the USB-C breakout borad plugged in and push it down to make room for the buzzer and the wiring<br>
   <img alt="assembly_4_orientation_of_the_charger_board" src="https://github.com/user-attachments/assets/841de468-23a7-4f09-b329-ced60c68de37" height="175">
   <img alt="assembly_5_push_charger_board_down_so_there_is_place_for_the_buzzer_on_top" src="https://github.com/user-attachments/assets/5a39e3c0-c1a1-4d8f-835f-80496ff6fb09" height="175">
 
-- put the buzzer on top of the charger borad and install the display (do not pinch the wires or trap any of them between the display and the mounting posts)<br>
+- put the buzzer on top of the charger board and install the display (do not pinch the wires or trap any of them between the display and the mounting posts)<br>
   <img alt="assembly_6_install_display_without_trapping_wires_below_the_mounting_posts" src="https://github.com/user-attachments/assets/3c0600a7-1d33-40e4-8706-9ef785acba9a" height="175">
   <img alt="Teaser Testing Case Design" src="https://github.com/user-attachments/assets/7748155b-8b2b-4c14-a970-0c6f3c926dd1" height="175">
   <img alt="impression" src="https://github.com/user-attachments/assets/a1ae70d3-7fb6-4171-a393-d219c019fa72" height="175">
