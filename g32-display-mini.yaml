@@ -68,7 +68,7 @@ substitutions:
   # interval for alarm sound
   Beeper_interval: "5s"
 
-  # Meater protetion alerts
+  # Meater protection alerts
   meater_tip_alert: '100'  # Specs: 100°C (original Meater: 100°C, 105°C (Meater PRO - not supported yet)
   meater_ambient_alert: '270'  # Specs: 275°C (original Meater), 550°C (Meater PRO - not supported yet)
 
