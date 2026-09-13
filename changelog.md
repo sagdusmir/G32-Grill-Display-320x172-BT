@@ -1,4 +1,6 @@
 # Changelog
+* [2026-09-13] BTmini 1.1.3
+   - meater tip temperature reading now supports frozen steaks
 * [2026-09-13] BTmini 1.1.2
    - updated for esphome 2026.8.x compatibility
 * [2026-07-21] BTmini 1.1.1
