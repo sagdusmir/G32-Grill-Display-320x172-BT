@@ -1,6 +1,6 @@
 # Changelog
 * [2026-09-13] BTmini 1.1.2
-   - updated for esphome 2026.8.x compaitibilty
+   - updated for esphome 2026.8.x compatibility
 * [2026-07-21] BTmini 1.1.1
    - minor fix: check for g32_firebox_open
 * [2026-05-01] BTmini 1.1.0
