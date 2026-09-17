@@ -1,4 +1,6 @@
 # Changelog
+* [2026-09-17] BTmini 1.1.4
+
 * [2026-09-13] BTmini 1.1.3
    - meater tip temperature reading now supports frozen steaks
 * [2026-09-13] BTmini 1.1.2
