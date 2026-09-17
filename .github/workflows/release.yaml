@@ -243,7 +243,17 @@ jobs:
         with:
           tag: ${{ env.TAG_NAME }}
           name: ${{ env.VERSION }}
-          body: ${{ env.MESSAGE }}
+          body: |
+            ${{ env.MESSAGE }}
+
+            ---
+
+            These files are compiled firmware with placeholder Wi-Fi / OTA / Home Assistant values.
+            Do not flash them as-is. Patch them in [ESP Bin Patch](https://sagdusmir.github.io/ESP-bin-patch/) (Chrome or Edge), then install over USB.
+            Pick the `.espbinpatch` file on that page — GitHub Release download links cannot be loaded in the browser.
+
+            - `*.factory.bin.espbinpatch` — first flash (erase everything)
+            - `*.ota.bin.espbinpatch` — later updates (keep saved settings)
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: firmware/*.espbinpatch
           artifactErrorsFailBuild: true
