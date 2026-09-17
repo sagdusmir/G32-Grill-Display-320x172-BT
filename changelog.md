@@ -1,4 +1,6 @@
 # Changelog
+* [2026-09-17] BTmini 1.1.4-1
+   - polishing release workflow
 * [2026-09-17] BTmini 1.1.4
 
 * [2026-09-13] BTmini 1.1.3
