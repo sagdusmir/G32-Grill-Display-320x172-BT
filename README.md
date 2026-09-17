@@ -186,7 +186,7 @@ Each [GitHub Release](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/
    | Wi-Fi SSID | `ESPBINPATCH_WIFI_SSID___________` | utf-8 |
    | Wi-Fi password | `ESPBINPATCH_WIFI_PASSWORD______________________________________` | utf-8 |
    | OTA password | `ESPBINPATCH_OTA_PASSWORD________________________________________` | utf-8 |
-   | Home Assistant API key | `RVNQQklOUEFUQ0hfQVBJX0VOQ1JZUFRJT05fS0VZX18=` | auto |
+   | Home Assistant API key | `ESPBINPATCH_API_ENCRYPTION_KEY__` | auto |
 
    For the API key, paste your Home Assistant / ESPHome `api.encryption.key` (the Base64 value) as **New**.
 5. Click **Patch firmware**, connect the board via USB, then **Install patched firmware**.
@@ -197,7 +197,7 @@ Each [GitHub Release](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/
 A form with the Old values already filled in (still pick the file in step 3):
 
 ```
-https://sagdusmir.github.io/ESP-bin-patch/?chip=ESP32-C6&flash=erase&pad=00&patch=0&old=ESPBINPATCH_WIFI_SSID___________&new=YOUR_WIFI_SSID&enc=utf-8&old=ESPBINPATCH_WIFI_PASSWORD______________________________________&new=YOUR_WIFI_PASSWORD&enc=utf-8&old=ESPBINPATCH_OTA_PASSWORD________________________________________&new=YOUR_OTA_PASSWORD&enc=utf-8&old=RVNQQklOUEFUQ0hfQVBJX0VOQ1JZUFRJT05fS0VZX18%3D&new=YOUR_HA_API_KEY&enc=auto
+https://sagdusmir.github.io/ESP-bin-patch/?chip=ESP32-C6&flash=erase&pad=00&patch=0&old=ESPBINPATCH_WIFI_SSID___________&new=YOUR_WIFI_SSID&enc=utf-8&old=ESPBINPATCH_WIFI_PASSWORD______________________________________&new=YOUR_WIFI_PASSWORD&enc=utf-8&old=ESPBINPATCH_OTA_PASSWORD________________________________________&new=YOUR_OTA_PASSWORD&enc=utf-8&old=ESPBINPATCH_API_ENCRYPTION_KEY__&new=YOUR_HA_API_KEY&enc=auto
 ```
 
 ### Compile from source
