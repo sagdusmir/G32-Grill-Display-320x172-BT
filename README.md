@@ -177,7 +177,7 @@ Each [GitHub Release](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/
 | `*.ota.bin.espbinpatch` | Later updates if the device already works (keeps Wi-Fi and other saved settings) |
 
 1. Download the matching file from the latest release.
-2. Open [ESP Bin Patch](https://sagdusmir.github.io/ESP-bin-patch/) in **Chrome or Edge**.
+2. Open [ESP Bin Patcher](https://sagdusmir.github.io/ESP-bin-patcher/) in **Chrome or Edge**.
 3. Choose the downloaded file on that page (it accepts `.espbinpatch`). GitHub Release download links cannot be loaded in the browser (CORS).
 4. Fill in the replacements. The new value must be the same length or shorter (leftover bytes are padded with `0x00`):
 
@@ -197,7 +197,7 @@ Each [GitHub Release](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/
 A form with the Old values already filled in (still pick the file in step 3):
 
 ```
-https://sagdusmir.github.io/ESP-bin-patch/?lock=1&chip=ESP32-C6&flash=erase&pad=00&patch=0&old=ESPBINPATCH_WIFI_SSID___________&new=YOUR_WIFI_SSID&enc=utf-8&old=ESPBINPATCH_WIFI_PASSWORD______________________________________&new=YOUR_WIFI_PASSWORD&enc=utf-8&old=ESPBINPATCH_OTA_PASSWORD________________________________________&new=YOUR_OTA_PASSWORD&enc=utf-8&old=ESPBINPATCH_API_ENCRYPTION_KEY__&new=YOUR_HA_API_KEY&enc=auto
+https://sagdusmir.github.io/ESP-bin-patcher/?lock=1&chip=ESP32-C6&flash=erase&pad=00&patch=0&old=ESPBINPATCH_WIFI_SSID___________&new=YOUR_WIFI_SSID&enc=utf-8&old=ESPBINPATCH_WIFI_PASSWORD______________________________________&new=YOUR_WIFI_PASSWORD&enc=utf-8&old=ESPBINPATCH_OTA_PASSWORD________________________________________&new=YOUR_OTA_PASSWORD&enc=utf-8&old=ESPBINPATCH_API_ENCRYPTION_KEY__&new=YOUR_HA_API_KEY&enc=auto
 ```
 
 ### Compile from source
