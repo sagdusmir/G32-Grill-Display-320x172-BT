@@ -173,32 +173,19 @@ Each [GitHub Release](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/
 
 | File | When to use |
 |---|---|
-| `*.factory.bin.espbinpatch` | First flash on a new or empty board (erases everything) |
+| `*.factory.bin.espbinpatch` | First flash on a new or empty device (erases everything) |
 | `*.ota.bin.espbinpatch` | Later updates if the device already works (keeps Wi-Fi and other saved settings) |
 
 1. Download the matching file from the latest release.
-2. Open [ESP Bin Patcher](https://sagdusmir.github.io/ESP-bin-patcher/) in **Chrome or Edge**.
-3. Choose the downloaded file on that page (it accepts `.espbinpatch`). GitHub Release download links cannot be loaded in the browser (CORS).
-4. Fill in the replacements. The new value must be the same length or shorter (leftover bytes are padded with `0x00`):
-
-   | What | Old (already in the image) | Mode |
-   |---|---|---|
-   | Wi-Fi SSID | `ESPBINPATCH_WIFI_SSID___________` | utf-8 |
-   | Wi-Fi password | `ESPBINPATCH_WIFI_PASSWORD______________________________________` | utf-8 |
-   | OTA password | `ESPBINPATCH_OTA_PASSWORD________________________________________` | utf-8 |
-   | Home Assistant API key | `ESPBINPATCH_API_ENCRYPTION_KEY__` | auto |
-
+2. Use the ESP Bin Patcher link in the release notes (preconfigured) in **Chrome or Edge**.
+3. Choose the downloaded file on that page.
+4. Fill in the replacements (Wi-Fi SSID, Wi-Fi password, OTA password, Home Assistant API key).
    For the API key, paste your Home Assistant / ESPHome `api.encryption.key` (the Base64 value) as **New**.
 5. Click **Patch firmware**, connect the board via USB, then **Install patched firmware**.
    - Factory file: choose **Erase everything**.
    - OTA file: choose **Keep saved settings**.
-6. You might need to reset the device after flashing (RST button).
+6. You might need to power-cycle the device after flashing if the screen shows some artefacts.
 
-A form with the Old values already filled in (still pick the file in step 3):
-
-```
-https://sagdusmir.github.io/ESP-bin-patcher/?lock=1&chip=ESP32-C6&flash=erase&pad=00&patch=0&old=ESPBINPATCH_WIFI_SSID___________&new=YOUR_WIFI_SSID&enc=utf-8&old=ESPBINPATCH_WIFI_PASSWORD______________________________________&new=YOUR_WIFI_PASSWORD&enc=utf-8&old=ESPBINPATCH_OTA_PASSWORD________________________________________&new=YOUR_OTA_PASSWORD&enc=utf-8&old=ESPBINPATCH_API_ENCRYPTION_KEY__&new=YOUR_HA_API_KEY&enc=auto
-```
 
 ### Compile from source
 
