@@ -1,6 +1,6 @@
 # Changelog
 * [2026-10-03] BTmini 1.1.5
-
+   - workaround for garbled screen after flashing
 * [2026-09-17] BTmini 1.1.4-1
    - polishing release workflow
 * [2026-09-17] BTmini 1.1.4
