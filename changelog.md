@@ -1,4 +1,9 @@
 # Changelog
+* [2026-10-10] BTmini 1.2.0-beta
+   - rewrite code for reading the BLE data frame
+   - read additional BLE characteristics beyond the 32 bytes we get from the G32
+   - expos additional values to HA
+   - minor refinements of HA values
 * [2026-10-03] BTmini 1.1.5
    - workaround for garbled screen after flashing
 * [2026-09-17] BTmini 1.1.4-1
