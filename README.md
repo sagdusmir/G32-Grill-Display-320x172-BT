@@ -184,7 +184,6 @@ Each [GitHub Release](https://github.com/sagdusmir/G32-Grill-Display-320x172-BT/
 5. Click **Patch firmware**, connect the board via USB, then **Install patched firmware**.
    - Factory file: choose **Erase everything**.
    - OTA file: choose **Keep saved settings**.
-6. You might need to power-cycle the device after flashing if the screen shows some artefacts.
 
 
 ### Compile from source
