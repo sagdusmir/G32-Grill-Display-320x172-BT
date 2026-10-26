@@ -92,7 +92,7 @@ See [changelog.md](changelog.md).
 ### Component Details
 
 * __ESP32 Dev Board__<br>
-  You need a "__Waveshare ESP32-C6-Touch-LCD-1.47__". It is equipped with an ESP32-C6, WiFi, Bluetooth, a 320x172 Pixel 1.47" touchscreen, and everything you need. No additional memory card required.
+  You need a "__Waveshare ESP32-C6-Touch-LCD-1.47__". It is equipped with an ESP32-C6, WiFi, Bluetooth, a 320x172 Pixel 1.47" touchscreen, and everything you need. No additional memory card required. Attention: The non-touch version is a very different hardware.
 
 
 * __Battery__
