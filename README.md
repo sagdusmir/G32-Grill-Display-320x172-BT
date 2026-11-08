@@ -46,6 +46,7 @@ Bare device during testing.<br>
 - **Automatic detection** of a near by G32 Connected
 - Real-time temperatures for up to **4 grill zones** + **4 external probes**
 - **Gas level** monitoring (if GasBuddy is installed)
+- **Gas consumption and time left** go to Home Assistant only (g/h and hours). They are not shown on the display.
 - **Alarms** — visual indicator + optional buzzer for temperature limits and other alarms
 - Touchscreen configuration
   - tap gauges to configure a temperature alarm (if the feature has not been disabled)
@@ -54,7 +55,7 @@ Bare device during testing.<br>
 - **Connection & status icons** (BLE, WiFi, battery SOC)
 - **Optional battery monitoring** the state of charge (SOC) of a connected battery can be displayed
 - **Optional MEATER® integration** with **automatic detection** shows tip temperatures & battery SOC instead of G32 probes when connected. There is an alert if temperature specs are exceeded.
-- **Optional Home Assistant** connectivity that exposes most of the measurements and allows confguring some settings of the device that can not be controlled using the UI on the device itself (min SOC level, min gas bottle level, color scheme, hide SOC, hide gas bottle level). At the moment HA will list about 38 entities for this device.
+- **Optional Home Assistant** connectivity that exposes most of the measurements and allows confguring some settings of the device that can not be controlled using the UI on the device itself (min SOC level, min gas bottle level, color scheme, hide SOC, hide gas bottle level). At the moment HA will list about 40 entities for this device.
 
 See [changelog.md](changelog.md).
 

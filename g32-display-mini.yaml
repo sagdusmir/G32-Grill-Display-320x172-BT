@@ -6,7 +6,7 @@ substitutions:
   # Name of the ESPHome device (modify if you like, avoid special characters)
   name: g32-display-mini
   device_description: "Monitor an OW G32 grill "
-  version: "BTmini 1.2.0-beta"
+  version: "BTmini 1.3.0"
 
   # either pull values from secrets.yaml
   # or have it directly in this file
@@ -60,6 +60,13 @@ substitutions:
   # minimum gas tank level
   SETTINGS_HIDE_GAS_LEVEL: "false"
   SETTINGS_MIN_GAS_VALUE: "15"
+
+  # How many gas-stock readings form the g/h estimate. The grill sends
+  # that weight every 10 s, so 4 readings span about 30 s. Minimum is 2.
+  GAS_RATE_SAMPLES: "4"
+
+  # g/h below this leaves time left unavailable. Consumption is still published.
+  GAS_RATE_STABLE_LIMIT: "100"
 
   # battery SOC
   SETTINGS_HIDE_SOC: "false"
@@ -326,6 +333,7 @@ ble_client:
             id: active_sensors
             value: "0"
         - script.execute: refresh_all_temps
+        - script.execute: reset_gas_consumption
 
   - mac_address: ${meater_mac_address}
     id: meater0
@@ -584,6 +592,11 @@ globals:
   - id: gas_weight
     type: int32_t
     initial_value: '-1'
+  # Bumped to drop the g/h window (disconnect, GasBuddy removed, new bottle).
+  - id: gas_rate_epoch
+    type: int
+    restore_value: no
+    initial_value: '0'
   - id: gas_percent
     type: int32_t
     initial_value: '0'
@@ -3610,6 +3623,7 @@ sensor:
       if (last >= 23) {
         t = (x[22] * 256 + x[23]);
         id(g32_gas_weight).publish_state(t);
+        id(update_gas_consumption).execute(t);
       }
       if (last >= 24) {
         id(g32_firebox_open).publish_state(x[24] == 1);
@@ -3789,6 +3803,25 @@ sensor:
             }
             return int(x);
       - lvgl.widget.refresh: [gas_percent_bar]
+
+  - platform: template
+    name: "G32 Gasbuddy consumption"
+    id: g32_gas_consumption
+    state_class: measurement
+    unit_of_measurement: "g/h"
+    accuracy_decimals: 1
+    icon: "mdi:fire"
+    update_interval: never
+
+  - platform: template
+    name: "G32 Gasbuddy time left"
+    id: g32_gas_time_left
+    device_class: duration
+    state_class: measurement
+    unit_of_measurement: h
+    accuracy_decimals: 1
+    icon: "mdi:timer-outline"
+    update_interval: never
 
   - platform: template
     name: "G32 Firmware Code"
@@ -4190,6 +4223,12 @@ binary_sensor:
     name: "G32 GasBuddy Connected"
     id: g32_gasbuddy_connected
     icon: "mdi:gas-cylinder"
+    on_state:
+      - if:
+          condition:
+            lambda: 'return !x;'
+          then:
+            - script.execute: reset_gas_consumption
 
   - platform: template
     name: "G32 Temperature Warning"
@@ -4202,6 +4241,105 @@ binary_sensor:
     icon: "mdi:thermometer-check"
 
 script:
+  # g/h from a least-squares slope over the last GAS_RATE_SAMPLES gas-stock
+  # readings. Positive means the bottle is getting lighter. Home Assistant only.
+  - id: update_gas_consumption
+    parameters:
+      grams: float
+    then:
+      - lambda: |-
+          const double sample_g = grams;
+          if (!std::isfinite(sample_g) || sample_g < 0.0) {
+            return;
+          }
+          constexpr int kRateN = ${GAS_RATE_SAMPLES};
+          static double hist_g[kRateN];
+          static uint32_t hist_ms[kRateN];
+          static int hist_count = 0;
+          static int hist_next = 0;
+          static int hist_epoch = 0;
+          if (id(gas_rate_epoch) != hist_epoch) {
+            hist_count = 0;
+            hist_next = 0;
+            hist_epoch = id(gas_rate_epoch);
+          }
+          if (kRateN < 2) {
+            return;
+          }
+          // A heavier reading is a new bottle. G32 has no calibration step
+          // that would otherwise drop the previous bottle's samples.
+          if (hist_count > 0) {
+            const int newest = (hist_next + kRateN - 1) % kRateN;
+            if (sample_g > hist_g[newest] + 200.0) {
+              id(gas_rate_epoch)++;
+              hist_count = 0;
+              hist_next = 0;
+              hist_epoch = id(gas_rate_epoch);
+              id(g32_gas_consumption).publish_state(NAN);
+              id(g32_gas_time_left).publish_state(NAN);
+              ESP_LOGI("gas_rate", "Consumption: reset");
+            }
+          }
+          const uint32_t now_ms = millis();
+          hist_g[hist_next] = sample_g;
+          hist_ms[hist_next] = now_ms;
+          hist_next = (hist_next + 1) % kRateN;
+          if (hist_count < kRateN) {
+            hist_count++;
+          }
+          if (hist_count < kRateN) {
+            ESP_LOGI("gas_rate", "Consumption: waiting %d/%d", hist_count, kRateN);
+            return;
+          }
+          const int oldest = hist_next;
+          const uint32_t t0 = hist_ms[oldest];
+          double sum_t = 0;
+          double sum_g = 0;
+          for (int i = 0; i < kRateN; i++) {
+            const int idx = (oldest + i) % kRateN;
+            sum_t += (double) (hist_ms[idx] - t0);
+            sum_g += hist_g[idx];
+          }
+          const double mean_t = sum_t / kRateN;
+          const double mean_g = sum_g / kRateN;
+          double num = 0;
+          double den = 0;
+          for (int i = 0; i < kRateN; i++) {
+            const int idx = (oldest + i) % kRateN;
+            const double dt = (double) (hist_ms[idx] - t0) - mean_t;
+            const double dg = hist_g[idx] - mean_g;
+            num += dt * dg;
+            den += dt * dt;
+          }
+          if (!(den > 0)) {
+            id(g32_gas_time_left).publish_state(NAN);
+            return;
+          }
+          double g_per_h = -(num / den) * 3600000.0;
+          if (g_per_h < 0 || !std::isfinite(g_per_h)) {
+            g_per_h = 0;
+          }
+          ESP_LOGI("gas_rate", "Consumption: %.1f g/h over %d readings", g_per_h, kRateN);
+          id(g32_gas_consumption).publish_state(g_per_h);
+          if (!(g_per_h >= ${GAS_RATE_STABLE_LIMIT}) || !std::isfinite(sample_g)) {
+            id(g32_gas_time_left).publish_state(NAN);
+            return;
+          }
+          const double hours = sample_g / g_per_h;
+          if (!(hours >= 0.0) || !std::isfinite(hours)) {
+            id(g32_gas_time_left).publish_state(NAN);
+            return;
+          }
+          id(g32_gas_time_left).publish_state(hours);
+
+  - id: reset_gas_consumption
+    then:
+      - lambda: |-
+          id(gas_rate_epoch)++;
+          id(g32_gas_consumption).publish_state(NAN);
+          id(g32_gas_time_left).publish_state(NAN);
+          ESP_LOGI("gas_rate", "Consumption: reset");
+
   # Consolidated refresh scripts for performance optimization
   - id: refresh_all_temps
     then:
